@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.latios.latiosframework": "https://github.com/Dreaming381/Latios-Framework.git",
+    "com.latios.psyshock.community": "https://github.com/Dreaming381/Psyshock-Community.git",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.entities.graphics": "1.3.2",
     "com.unity.ide.rider": "3.0.31",

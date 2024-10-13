@@ -12,6 +12,16 @@
       },
       "hash": "b34647bd609fac36550f76c60181f7e5d89a2f33"
     },
+    "com.latios.psyshock.community": {
+      "version": "https://github.com/Dreaming381/Psyshock-Community.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.entities": "1.3.2",
+        "com.unity.burst": "1.8.18"
+      },
+      "hash": "e2dac77041fbe84556e1c72a39f6e2aee348e601"
+    },
     "com.unity.audio.dspgraph": {
       "version": "0.1.0-preview.22",
       "depth": 1,
@@ -26,7 +36,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.17",
+      "version": "1.8.18",
       "depth": 1,
       "source": "registry",
       "dependencies": {
