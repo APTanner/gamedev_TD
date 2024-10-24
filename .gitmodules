@@ -1,0 +1,3 @@
+[submodule "Assets/Thirdparty/Psyshock-Community"]
+	path = Assets/Thirdparty/Psyshock-Community
+	url = https://github.com/APTanner/Psyshock-Community.git
