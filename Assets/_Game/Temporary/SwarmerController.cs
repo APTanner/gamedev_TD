@@ -224,34 +224,20 @@ public class SwarmerController : MonoBehaviour
     private void HandleTargetSelection(ref AvoidanceDistances d, in RaycastHit center, in RaycastHit right, in RaycastHit left)
     {
         m_bFacingTarget = false;
-        if (center.collider?.gameObject.layer == Defines.EnvironmentLayer)
-        {
-            d.CenterDistance = center.distance;
-        }
-        else if (center.collider?.gameObject.layer == Defines.PlayerLayer)
+        if (center.collider?.gameObject.layer == Defines.PlayerLayer)
         {
             SetTarget(center);
             m_bFacingTarget = true;
             m_attention = Defines.SwarmerAttentionSpan;
         }
-
         // Because the right is checked first it means it will always favor a right target
         // maybe we want to randomize this?
-        if (right.collider?.gameObject.layer == Defines.EnvironmentLayer)
-        {
-            d.RightDistance = right.distance;
-        }
-        else if (right.collider?.gameObject.layer == Defines.PlayerLayer && m_target == null)
+        else if (m_target == null && right.collider?.gameObject.layer == Defines.PlayerLayer)
         {
             SetTarget(right);
             m_attention = Defines.SwarmerAttentionSpan;
         }
-
-        if (left.collider?.gameObject.layer == Defines.EnvironmentLayer)
-        {
-            d.LeftDistance = left.distance;
-        }
-        else if (left.collider?.gameObject.layer == Defines.PlayerLayer && m_target == null)
+        else if (m_target == null && left.collider?.gameObject.layer == Defines.PlayerLayer)
         {
             SetTarget(left);
             m_attention = Defines.SwarmerAttentionSpan;
@@ -278,6 +264,25 @@ public class SwarmerController : MonoBehaviour
             }
         }
 
+        if (m_target == null)
+        {
+            d.CenterDistance = center.distance;
+            d.RightDistance = right.distance;
+            d.LeftDistance = left.distance;
+        }
+        else
+        {
+            d.CenterDistance = center.collider != null &&
+                center.collider.gameObject.layer == Defines.EnvironmentLayer ?
+                center.distance : 0;
+            d.RightDistance = right.collider != null &&
+                right.collider.gameObject.layer == Defines.EnvironmentLayer ?
+                right.distance : 0;
+            d.LeftDistance = left.collider != null &&
+                left.collider.gameObject.layer == Defines.EnvironmentLayer ?
+                left.distance : 0;
+        }
+        
         if (m_target != null)
         {
             Debug.DrawLine(transform.position, m_target.GetPosition(), Color.black);
