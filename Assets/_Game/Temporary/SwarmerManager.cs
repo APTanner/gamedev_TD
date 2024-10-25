@@ -43,7 +43,7 @@ public class SwarmerManager : MonoBehaviour
 
     public void Start()
     {
-        SpawnSwarmers(Vector2.zero, 10);
+        SpawnSwarmers(Vector2.zero, 100);
     }
 
     public void Update()

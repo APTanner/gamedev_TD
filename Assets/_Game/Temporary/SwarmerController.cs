@@ -257,6 +257,27 @@ public class SwarmerController : MonoBehaviour
             m_attention = Defines.SwarmerAttentionSpan;
         }
 
+        if (m_target is Wall)
+        {
+            // perform sanity check
+            Vector2 t = (SwarmerTarget.Instance.transform.position.xz() - transform.position.xz()).normalized;
+            Vector3 toTarget = new(t.x, 0, t.y);
+            Vector3 pos = transform.position + toTarget * m_manager.ObstacleAvoidDistance/2;
+            Quaternion atTarget = Quaternion.LookRotation(toTarget, Vector3.up);
+            bool bBlocker = Physics.CheckBox(
+                pos,
+                new(m_radius, m_radius, m_manager.ObstacleAvoidDistance/2),
+                atTarget,
+                m_environmentLayer | m_targetsLayer);
+
+            Vector3 f = atTarget * Vector3.forward;
+
+            if (!bBlocker)
+            {
+                m_target = null;
+            }
+        }
+
         if (m_target != null)
         {
             Debug.DrawLine(transform.position, m_target.GetPosition(), Color.black);

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Wall : MonoBehaviour, IBuilding
 {
-    private int m_health = 10000;
+    private int m_health = 1000;
 
     private BuildingManager m_manager;
 

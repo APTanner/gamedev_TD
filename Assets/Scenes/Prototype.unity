@@ -948,7 +948,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 203341291}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0b488c360f0deb4fbf3632195e09321, type: 3}
+  m_Script: {fileID: 11500000, guid: 1de9d6bc7a261fa44a61092fe6d15a79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &203341293
@@ -2908,6 +2908,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 727151394}
   m_CullTransparentMesh: 1
+--- !u!1 &730814462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 730814464}
+  - component: {fileID: 730814463}
+  m_Layer: 0
+  m_Name: SwarmerTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &730814463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730814462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 894cf05fc09db9644a03716b5715dba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &730814464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730814462}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &764259364
 GameObject:
   m_ObjectHideFlags: 0
@@ -5092,8 +5136,71 @@ Transform:
   m_GameObject: {fileID: 1704644224}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 100, y: 0, z: 100}
+  m_LocalScale: {x: 20, y: 1, z: 20}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1724164208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1724164210}
+  - component: {fileID: 1724164209}
+  m_Layer: 0
+  m_Name: SwarmerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1724164209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724164208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61c2db8dfe6ea714b8c0fcfc9029b826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSpeed: 0
+  Acceleration: 0
+  TurnSpeed: 0
+  AvoidanceAngle: 0
+  ObstacleAvoidDistance: 0
+  WhiskerDistance: 0
+  NeighborDetectionDistance: 0
+  ObstacleAvoidSlowdownRange: 0
+  TargetWeight: 0
+  AlignmentWeight: 0
+  ObstacleWeight: 0
+  SeparationWeight: 0
+  DebugMovement: 1
+  AttackDistance: 0
+  AttackDamage: 0
+  CellSize: 0
+  DrawDistance: 0
+  Draw: 0
+  Prefab: {fileID: 0}
+--- !u!4 &1724164210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724164208}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 1, z: 100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -5609,3 +5716,5 @@ SceneRoots:
   - {fileID: 1655843606}
   - {fileID: 483640616}
   - {fileID: 453033884}
+  - {fileID: 1724164210}
+  - {fileID: 730814464}
