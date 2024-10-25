@@ -36,5 +36,27 @@ public static class MathFunctions
     {
         return new Vector3(v.x, 0, v.y);
     }
+
+
+    // TEMPORARY
+    public static Vector2 xz(this Vector3 v)
+    {
+        return new Vector2(v.x, v.z);
+    }
+
+    public static Vector3 UnflattenVector2(Vector2 v, float y = 0)
+    {
+        return new Vector3(v.x, y, v.y);
+    }
+
+    public static float Cross(Vector2 a, Vector2 b)
+    {
+        return a.x * b.y - a.y * b.x;
+    }
+
+    public static float Square(float a)
+    {
+        return a * a;
+    }
 }
 

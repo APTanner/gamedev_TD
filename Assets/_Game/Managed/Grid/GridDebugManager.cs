@@ -18,7 +18,7 @@ public class GridDebugManager : MonoBehaviour
     private GridDebug[] m_grid;
     private Vector2Int m_size;
 
-    public void SetDebugPrefabs(Grid grid)
+    public void SetDebugPrefabs(GridManager grid)
     {
         m_grid = new GridDebug[grid.Height * grid.Width];
         m_size = new Vector2Int(grid.Width, grid.Height);
@@ -30,7 +30,7 @@ public class GridDebugManager : MonoBehaviour
                 GridDebug gd = Instantiate(Prefab, transform);
                 m_grid[m_size.x * y + x] = gd;
                 gd.SetCoordinates(new Vector2Int(x, y));
-                float size = Defines.WorldCellSize;
+                float size = Defines.BuildingGridCellSize;
                 Vector3 worldPosition = new Vector3(
                     x * size + size/2,
                     0.01f,

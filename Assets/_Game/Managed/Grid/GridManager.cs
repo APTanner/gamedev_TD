@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Entities;
+using Latios;
 
-public class Grid : MonoBehaviour
+public class GridManager : MonoBehaviour
 {
-    private static Grid m_instance;
-    public static Grid Instance => m_instance;
+    private static GridManager m_instance;
+    public static GridManager Instance => m_instance;
 
     private GridCell[] m_cells;
     private Vector2Int m_size = new Vector2Int(100, 100);
@@ -26,6 +28,32 @@ public class Grid : MonoBehaviour
                 m_cells[yOffset + x] = new GridCell(x, y);
             }
         }
+
+        var latiosWorld = World.DefaultGameObjectInjectionWorld
+            .EntityManager.GetLatiosWorldUnmanaged();
+
+
+        BuildingGridDefines buildingGrid = new BuildingGridDefines
+        {
+            cellSize = Defines.BuildingGridCellSize,
+            width = Width,
+            height = Height,
+        };
+
+        int width =
+            Mathf.CeilToInt(Width * Defines.BuildingGridCellSize / Defines.EnemyGridCellSize);
+        int height =
+            Mathf.CeilToInt(Height * Defines.BuildingGridCellSize / Defines.EnemyGridCellSize);
+
+        EnemyGridDefines enemyGrid = new EnemyGridDefines
+        {
+            cellSize = Defines.EnemyGridCellSize,
+            width = width,
+            height = height
+        };
+
+        latiosWorld.worldBlackboardEntity.AddComponentData(buildingGrid);
+        latiosWorld.worldBlackboardEntity.AddComponentData(enemyGrid);
     }
 
     protected void Start()
@@ -42,14 +70,14 @@ public class Grid : MonoBehaviour
     {
         // If the grid is not in the center of the world we probably have to change something here
         return new Vector2Int(
-            Mathf.FloorToInt(position.x / Defines.WorldCellSize),
-            Mathf.FloorToInt(position.z / Defines.WorldCellSize)
+            Mathf.FloorToInt(position.x / Defines.BuildingGridCellSize),
+            Mathf.FloorToInt(position.z / Defines.BuildingGridCellSize)
         );
     }
 
     public Vector3 GetCellCenter(Vector2Int coordinates)
     {
-        float size = Defines.WorldCellSize;
+        float size = Defines.BuildingGridCellSize;
         return new Vector3(
             coordinates.x * size + size / 2,
             0,

@@ -1,3 +1,5 @@
+using Unity.Entities;
+
 public struct CrawlerData
 {
     public float speed;
@@ -24,3 +26,5 @@ public struct EnemyHealthData
     public int health;
     public int armor;
 }
+
+public struct Enemy : IComponentData { }

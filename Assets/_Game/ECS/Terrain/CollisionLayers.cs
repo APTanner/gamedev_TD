@@ -2,7 +2,7 @@ using Latios;
 using Latios.Psyshock;
 using Unity.Jobs;
 
-public partial struct TerrainCollisionLayer : ICollectionComponent
+public partial struct TerrainLayer : ICollectionComponent
 {
     public CollisionLayer layer;
 

@@ -32,7 +32,7 @@ public class BuildingManager : MonoBehaviour
             return;
         }
 
-        Grid grid = Grid.Instance;
+        GridManager grid = GridManager.Instance;
         Vector2Int coords = grid.GetCoordinates(mousePosition);
         if (!grid.IsValidCoordinate(coords))
         {
@@ -65,7 +65,7 @@ public class BuildingManager : MonoBehaviour
             }
         }
 
-        Grid grid = Grid.Instance;
+        GridManager grid = GridManager.Instance;
         foreach (IBuilding building in destroyedBuildings)
         {
             m_buildings.Remove(building);

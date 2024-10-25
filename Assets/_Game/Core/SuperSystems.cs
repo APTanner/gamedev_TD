@@ -9,8 +9,10 @@ public partial class FixedUpdateGameBehavior : RootSuperSystem
     protected override void CreateSystems()
     {
         //GetOrCreateAndAddUnmanagedSystem<BuildSwarmerCollisionLayerSystem>();
-        //GetOrCreateAndAddManagedSystem<InitializationSuperSystem>();
+        GetOrCreateAndAddManagedSystem<InitializationSuperSystem>();
         //GetOrCreateAndAddUnmanagedSystem<SwarmerMovementSystem>();
+        GetOrCreateAndAddUnmanagedSystem<EnemyGridAssignmentSystem>();
+        GetOrCreateAndAddUnmanagedSystem<EnemyGridHeadingSystem>();
     }
 }
 
