@@ -1,11 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class BuildingManager : MonoBehaviour
 {
+    // will find a better way of doing this...
+    public GraphicRaycaster uiRaycaster;
+    public EventSystem eventSystem;
+    public List<GameObject> uiElementsToBlock;
+
     [SerializeField] private Wall WallPrefab;
 
     private List<IBuilding> m_buildings = new();
+
+    private bool isBuildingWalls = false;
 
     public static BuildingManager Instance { get; private set; }
 
@@ -21,8 +30,19 @@ public class BuildingManager : MonoBehaviour
 
     protected void Update()
     {
+        if (!isBuildingWalls)
+        {
+            return;
+        }
+        
         if (!Input.GetMouseButton(0))
         {
+            return;
+        }
+
+        if (IsPointerOverUIElement())
+        {
+            Debug.Log("Pointer is over UI");
             return;
         }
 
@@ -73,5 +93,31 @@ public class BuildingManager : MonoBehaviour
             Component c = building as Component;
             Destroy(c.gameObject);
         }
+    }
+
+    public void ToggleWallBuilding()
+    {
+        isBuildingWalls = !isBuildingWalls;
+    }
+
+    private bool IsPointerOverUIElement()
+    {
+        PointerEventData eventData = new PointerEventData(eventSystem)
+        {
+            position = Input.mousePosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        uiRaycaster.Raycast(eventData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            if (uiElementsToBlock.Contains(result.gameObject))
+            {
+                return true; 
+            }
+        }
+
+        return false; 
     }
 }
