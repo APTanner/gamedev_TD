@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SwarmerSpawnAtPosition : MonoBehaviour
 {
@@ -8,16 +10,26 @@ public class SwarmerSpawnAtPosition : MonoBehaviour
     public int swarmCount = 5; // Number of swarmers to spawn
     private bool isSpawningSwarmers = false; // Toggle boolean for enabling/disabling spawning
 
+    public GraphicRaycaster uiRaycaster;
+    public EventSystem eventSystem;
+    public List<GameObject> uiElementsToBlock;
+
     void Update()
     {
         // Check if the toggle is enabled and the left mouse button is clicked
         if (isSpawningSwarmers && Input.GetMouseButtonDown(0))
         {
+            if (IsPointerOverSpecificUI())
+            {
+                return;
+            }
             Vector3 mousePosition = GetMouseWorldPosition();
-            Vector2 spawnPos = new Vector2(mousePosition.x, mousePosition.z);
-
-            // Call the SpawnSwarmers method at the current mouse position
-            SpawnSwarmers(spawnPos, swarmCount);
+            if (mousePosition != Vector3.zero)
+            {
+                Vector2 spawnPos = new Vector2(mousePosition.x, mousePosition.z);
+                // Call the SpawnSwarmers method at the current mouse position
+                SpawnSwarmers(spawnPos, swarmCount);
+            }
         }
     }
 
@@ -66,5 +78,27 @@ public class SwarmerSpawnAtPosition : MonoBehaviour
         }
 
         return Vector3.zero; // Return zero if no valid position was found
+    }
+
+    private bool IsPointerOverSpecificUI()
+    {
+        PointerEventData eventData = new PointerEventData(eventSystem)
+        {
+            position = Input.mousePosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        uiRaycaster.Raycast(eventData, results);
+
+        // Loop through all UI elements hit by the raycast and check if they are in the list of specific UI elements
+        foreach (RaycastResult result in results)
+        {
+            if (uiElementsToBlock.Contains(result.gameObject))
+            {
+                return true; // Return true only if the hit UI element is one that should block the input
+            }
+        }
+
+        return false; // No matching UI elements were hit
     }
 }

@@ -21,6 +21,8 @@ public class SwarmerManager : MonoBehaviour
     public float SeparationWeight;
     public bool DebugMovement = true;
 
+    public float targetDestroyDistance;
+
     [Header("Attacking")]
     public float AttackDistance;
     public int AttackDamage;
@@ -43,7 +45,7 @@ public class SwarmerManager : MonoBehaviour
 
     public void Start()
     {
-        SpawnSwarmers(Vector2.zero, 100);
+        //SpawnSwarmers(Vector2.zero, 100);
     }
 
     public void Update()
@@ -105,7 +107,7 @@ public class SwarmerManager : MonoBehaviour
                 swarmer.Target.TakeDamage(AttackDamage);
             }
 
-            if (Vector3.SqrMagnitude(SwarmerTarget.Instance.transform.position - swarmer.transform.position) < 1)
+            if (Vector3.SqrMagnitude(SwarmerTarget.Instance.transform.position - swarmer.transform.position) < targetDestroyDistance * targetDestroyDistance)
             {
                 swarmersToRemove.Add(swarmer);
             }
