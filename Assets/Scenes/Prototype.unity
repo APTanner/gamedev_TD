@@ -3023,6 +3023,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiRaycaster: {fileID: 483640613}
   eventSystem: {fileID: 453033883}
+  uiElementsToBlock:
+  - {fileID: 354937841}
+  - {fileID: 7266693}
+  - {fileID: 776799354}
   WallPrefab: {fileID: 5553295223990071648, guid: a7a28c5d9489a4342a8a13298cca2696,
     type: 3}
 --- !u!4 &874086445
