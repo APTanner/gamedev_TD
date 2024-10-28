@@ -346,7 +346,7 @@ public class SwarmerController : MonoBehaviour
     private void Move(in AvoidanceDistances d)
     {
         m_bAttacking = false; // reset
-        Vector2 currentV = m_rb.velocity.xz();
+        Vector2 currentV = m_rb.linearVelocity.xz();
 
         Vector2 desiredV = transform.forward.xz() * m_manager.MaxSpeed;
 
@@ -378,7 +378,7 @@ public class SwarmerController : MonoBehaviour
             DeservesSlowdown(d.RightDistance) ||
             DeservesSlowdown(d.LeftDistance))
         {
-            m_rb.velocity *= .1f;
+            m_rb.linearVelocity *= .1f;
         };
     }
 
