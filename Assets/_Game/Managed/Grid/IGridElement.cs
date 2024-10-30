@@ -25,3 +25,11 @@ public interface IBuilding : IGridElement
     public void TakeDamage(int damage);
     public bool IsDestroyed { get; }
 }
+
+public interface IBuildable : IGridElement
+{
+    GameObject Prefab { get; }
+    Vector2Int Size { get; } 
+    bool CanPlaceAt(Vector2Int startCoords, GridManager grid);
+    void Place(Vector2Int startCoords, GridManager grid);
+}
