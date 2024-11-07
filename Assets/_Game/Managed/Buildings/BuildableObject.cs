@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BuildableObject : MonoBehaviour, IBuildable
+public class BuildableObject : MonoBehaviour, IBuildable, IBuilding
 {
     public GameObject Prefab => gameObject;
 
@@ -26,14 +26,18 @@ public class BuildableObject : MonoBehaviour, IBuildable
 
     public bool CanPlaceAt(Vector2Int startCoords, GridManager grid)
     {
-        for (int y = 0; y < Size.y; y++)
+        for (int y = 0; y < size.y; y++)
         {
-            for (int x = 0; x < Size.x; x++)
+            for (int x = 0; x < size.x; x++)
             {
-                Vector2Int cellCoords = startCoords + new Vector2Int(x, y);
+                Vector2Int cellCoords = new Vector2Int(startCoords.x + x, startCoords.y + y);
+
+                // Debug: Log cell validation
+                // Debug.Log($"Checking cell at {cellCoords}: IsEmpty = {grid.GetCell(cellCoords).IsEmpty()}");
+
                 if (!grid.IsValidCoordinate(cellCoords) || !grid.GetCell(cellCoords).IsEmpty())
                 {
-                    return false; // Invalid placement
+                    return false; // Placement is invalid if any cell is occupied or out of bounds
                 }
             }
         }
@@ -43,11 +47,12 @@ public class BuildableObject : MonoBehaviour, IBuildable
     public void Place(Vector2Int startCoords, GridManager grid)
     {
         Coordinates = startCoords;
-        for (int y = 0; y < Size.y; y++)
+        for (int y = 0; y < size.y; y++)
         {
-            for (int x = 0; x < Size.x; x++)
+            for (int x = 0; x < size.x; x++)
             {
                 Vector2Int cellCoords = startCoords + new Vector2Int(x, y);
+                //Debug.Log($"Placing object: Occupied cell at {cellCoords}");
                 grid.GetCell(cellCoords).SetElement(this);
             }
         }

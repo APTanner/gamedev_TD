@@ -25,6 +25,7 @@ public class BuildingManager : MonoBehaviour
         Instance = this;
     }
 
+
     protected void Update()
     {
         if (!isPlacingObject || currentBuildable == null)
@@ -46,17 +47,29 @@ public class BuildingManager : MonoBehaviour
         GridManager grid = GridManager.Instance;
         Vector2Int startCoords = grid.GetCoordinates(mousePosition);
 
-        Vector3 gridPos = grid.GetCellCenter(startCoords);
+        // Adjust startCoords to represent the top-left corner based on object size
+        Vector2Int adjustedStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1),
+            startCoords.y + (currentBuildable.Size.y - 1)
+        );
+
+        Vector2Int placementStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1) /2,
+            startCoords.y + (currentBuildable.Size.y - 1) /2
+        );
+
+        Vector3 gridPos = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
+
         // Check if the entire area for the buildable is valid
-        bool canPlace = currentBuildable.CanPlaceAt(startCoords, grid);
+        bool canPlace = currentBuildable.CanPlaceAt(placementStartCoords, grid);
         UpdatePreviewPosition(gridPos, canPlace);
 
         if (Input.GetMouseButtonDown(0) && canPlace)
         {
             PlaceObject(startCoords, grid);
+
         }
     }
-
 
     public void SetBuildableObject(IBuildable buildablePrefab)
     {
@@ -84,10 +97,21 @@ public class BuildingManager : MonoBehaviour
 
     private void PlaceObject(Vector2Int startCoords, GridManager grid)
     {
-        Vector3 position = GetAlignedPosition(startCoords, currentBuildable.Size, grid);
-        IBuildable buildableInstance = Instantiate(currentBuildable.Prefab, position, Quaternion.identity).GetComponent<IBuildable>();
-        buildableInstance.Place(startCoords, grid);
+        Vector2Int adjustedStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1),
+            startCoords.y + (currentBuildable.Size.y - 1)
+        );
 
+        Vector2Int placementStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1) / 2,
+            startCoords.y + (currentBuildable.Size.y - 1) / 2
+        );
+
+        Vector3 position = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
+        IBuildable buildableInstance = Instantiate(currentBuildable.Prefab, position, Quaternion.identity).GetComponent<IBuildable>();
+        buildableInstance.Place(placementStartCoords, grid);
+
+        // Register the placed building as an IBuilding for cleanup tracking
         Register((IBuilding)buildableInstance);
     }
 
