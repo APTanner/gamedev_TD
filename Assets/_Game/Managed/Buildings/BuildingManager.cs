@@ -5,16 +5,18 @@ using UnityEngine.UI;
 
 public class BuildingManager : MonoBehaviour
 {
-    // will find a better way of doing this...
     public GraphicRaycaster uiRaycaster;
     public EventSystem eventSystem;
     public List<GameObject> uiElementsToBlock;
 
-    [SerializeField] private Wall WallPrefab;
+    public Material validPlacementMaterial;
+    public Material invalidPlacementMaterial;
 
-    private List<IBuilding> m_buildings = new();
+    private GameObject previewInstance;
+    private IBuildable currentBuildable;
+    private bool isPlacingObject = false;
 
-    private bool isBuildingWalls = false;
+    private List<IBuilding> m_buildings = new(); 
 
     public static BuildingManager Instance { get; private set; }
 
@@ -23,26 +25,16 @@ public class BuildingManager : MonoBehaviour
         Instance = this;
     }
 
-    public void Register(IBuilding building)
-    {
-        m_buildings.Add(building);
-    }
 
     protected void Update()
     {
-        if (!isBuildingWalls)
-        {
-            return;
-        }
-        
-        if (!Input.GetMouseButton(0))
+        if (!isPlacingObject || currentBuildable == null)
         {
             return;
         }
 
         if (IsPointerOverUIElement())
         {
-            Debug.Log("Pointer is over UI");
             return;
         }
 
@@ -53,24 +45,82 @@ public class BuildingManager : MonoBehaviour
         }
 
         GridManager grid = GridManager.Instance;
-        Vector2Int coords = grid.GetCoordinates(mousePosition);
-        if (!grid.IsValidCoordinate(coords))
+        Vector2Int startCoords = grid.GetCoordinates(mousePosition);
+
+        // Adjust startCoords to represent the top-left corner based on object size
+        Vector2Int adjustedStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1),
+            startCoords.y + (currentBuildable.Size.y - 1)
+        );
+
+        Vector2Int placementStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1) /2,
+            startCoords.y + (currentBuildable.Size.y - 1) /2
+        );
+
+        Vector3 gridPos = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
+
+        // Check if the entire area for the buildable is valid
+        bool canPlace = currentBuildable.CanPlaceAt(placementStartCoords, grid);
+        UpdatePreviewPosition(gridPos, canPlace);
+
+        if (Input.GetMouseButtonDown(0) && canPlace)
         {
-            return;
+            PlaceObject(startCoords, grid);
+
+        }
+    }
+
+    public void SetBuildableObject(IBuildable buildablePrefab)
+    {
+        if (isPlacingObject)
+        {
+            StopPlacingObject(); 
         }
 
-        ref GridCell cell = ref grid.GetCell(coords);
-        if (!cell.IsEmpty())
+        StartPlacingObject(buildablePrefab); 
+    }
+
+    public void StartPlacingObject(IBuildable buildablePrefab)
+    {
+        currentBuildable = buildablePrefab;
+        isPlacingObject = true;
+
+        CreatePreview(buildablePrefab.Prefab, validPlacementMaterial);
+    }
+
+    public void StopPlacingObject()
+    {
+        isPlacingObject = false;
+        DestroyPreview();
+    }
+
+    private void PlaceObject(Vector2Int startCoords, GridManager grid)
+    {
+        Vector2Int adjustedStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1),
+            startCoords.y + (currentBuildable.Size.y - 1)
+        );
+
+        Vector2Int placementStartCoords = new Vector2Int(
+            startCoords.x + (currentBuildable.Size.x - 1) / 2,
+            startCoords.y + (currentBuildable.Size.y - 1) / 2
+        );
+
+        Vector3 position = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
+        IBuildable buildableInstance = Instantiate(currentBuildable.Prefab, position, Quaternion.identity).GetComponent<IBuildable>();
+        buildableInstance.Place(placementStartCoords, grid);
+
+        // Register the placed building as an IBuilding for cleanup tracking
+        Register((IBuilding)buildableInstance);
+    }
+
+    public void Register(IBuilding building)
+    {
+        if (!m_buildings.Contains(building))
         {
-            Debug.Log($"The cell [{coords.ToString()}] already had something on it");
-            return;
+            m_buildings.Add(building);
         }
-
-        Vector3 pos = grid.GetCellCenter(coords);
-
-        Wall wall = Instantiate(WallPrefab, pos, Quaternion.identity);
-        wall.SetCoordinates(coords);
-        cell.SetElement(wall);
     }
 
     public void CleanupBuildings()
@@ -80,7 +130,7 @@ public class BuildingManager : MonoBehaviour
         {
             if (building.IsDestroyed)
             {
-                Debug.Log("Destroying wall");
+                Debug.Log("Destroying building");
                 destroyedBuildings.Add(building);
             }
         }
@@ -95,9 +145,50 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
-    public void ToggleWallBuilding()
+    private Vector3 GetAlignedPosition(Vector2Int startCoords, Vector2Int objectSize, GridManager grid)
     {
-        isBuildingWalls = !isBuildingWalls;
+
+        Vector3 cellCenter = grid.GetCellCenter(startCoords);
+        float offsetX = (objectSize.x - 1); 
+        float offsetY = (objectSize.y - 1); 
+
+
+        return new Vector3(cellCenter.x - offsetX, cellCenter.y, cellCenter.z - offsetY);
+    }
+
+    private void CreatePreview(GameObject prefab, Material initialMaterial)
+    {
+        previewInstance = Instantiate(prefab);
+        SetPreviewMaterial(initialMaterial);
+    }
+
+    private void UpdatePreviewPosition(Vector3 position, bool canPlace)
+    {
+        Vector3 alignedPosition = GetAlignedPosition(
+            GridManager.Instance.GetCoordinates(position),
+            currentBuildable.Size,
+            GridManager.Instance
+        );
+
+        previewInstance.transform.position = alignedPosition;
+        SetPreviewMaterial(canPlace ? validPlacementMaterial : invalidPlacementMaterial);
+    }
+
+    private void SetPreviewMaterial(Material material)
+    {
+        foreach (Renderer renderer in previewInstance.GetComponentsInChildren<Renderer>())
+        {
+            renderer.material = material;
+        }
+    }
+
+    private void DestroyPreview()
+    {
+        if (previewInstance != null)
+        {
+            Destroy(previewInstance);
+            previewInstance = null;
+        }
     }
 
     private bool IsPointerOverUIElement()
@@ -114,10 +205,10 @@ public class BuildingManager : MonoBehaviour
         {
             if (uiElementsToBlock.Contains(result.gameObject))
             {
-                return true; 
+                return true;
             }
         }
 
-        return false; 
+        return false;
     }
 }

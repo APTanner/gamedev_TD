@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class ToggleButtonsManager : MonoBehaviour
 {
@@ -8,6 +7,7 @@ public class ToggleButtonsManager : MonoBehaviour
     public Color clickedColor = Color.green;
 
     private Button currentHighlightedButton = null;
+    public BuildingManager buildingManager; 
 
     void Start()
     {
@@ -17,12 +17,56 @@ public class ToggleButtonsManager : MonoBehaviour
         {
             button.image.color = normalColor;
 
-            button.onClick.AddListener(() => ToggleButtonColor(button));
+            BuildingButton buildingButton = button.GetComponent<BuildingButton>();
+
+            if (buildingButton != null)
+            {
+                button.onClick.AddListener(() => ToggleButtonColor(button, buildingButton.buildingPrefab));
+            }
+            else 
+            {
+                button.onClick.AddListener(() => ToggleNonBuildingButton(button));
+            }
         }
     }
 
-    void ToggleButtonColor(Button clickedButton)
+    void ToggleButtonColor(Button clickedButton, IBuildable buildablePrefab)
     {
+        if (currentHighlightedButton == clickedButton)
+        {
+            clickedButton.image.color = normalColor;
+            currentHighlightedButton = null;
+            buildingManager.StopPlacingObject();
+        }
+        else
+        {
+            if (currentHighlightedButton != null && currentHighlightedButton.GetComponent<BuildingButton>() == null)
+            {
+                currentHighlightedButton.onClick.Invoke();
+            }
+
+            if (currentHighlightedButton != null)
+            {
+                currentHighlightedButton.image.color = normalColor;
+                buildingManager.StopPlacingObject();
+            }
+
+            clickedButton.image.color = clickedColor;
+            currentHighlightedButton = clickedButton;
+
+            buildingManager.SetBuildableObject(buildablePrefab);
+        }
+    }
+
+    void ToggleNonBuildingButton(Button clickedButton)
+    {
+        buildingManager.StopPlacingObject();
+
+        if (currentHighlightedButton != null && currentHighlightedButton != clickedButton && currentHighlightedButton.GetComponent<BuildingButton>() == null)
+        {
+            currentHighlightedButton.onClick.Invoke();
+        }
+
         if (currentHighlightedButton == clickedButton)
         {
             clickedButton.image.color = normalColor;
@@ -32,11 +76,13 @@ public class ToggleButtonsManager : MonoBehaviour
         {
             if (currentHighlightedButton != null)
             {
-                currentHighlightedButton.onClick.Invoke();
+                currentHighlightedButton.image.color = normalColor;
             }
 
             clickedButton.image.color = clickedColor;
             currentHighlightedButton = clickedButton;
+
+            Debug.Log($"{clickedButton.name} non-building button selected.");
         }
     }
 }
