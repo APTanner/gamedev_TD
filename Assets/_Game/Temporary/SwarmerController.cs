@@ -3,6 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class SwarmerController : MonoBehaviour
 {
+    [SerializeField] private float maxHealth = 5f;
+    private float currentHealth;
+
     public bool ShowDesiredHeading = false;
     public float separationWeight;
     public float obstacleWeight;
@@ -23,6 +26,8 @@ public class SwarmerController : MonoBehaviour
     public bool IsAttacking => m_bAttacking;
     public IBuilding Target => m_target;
 
+    private Vector2Int currentCoord;
+
     protected void Awake()
     {
         m_environmentLayer = 1 << Defines.EnvironmentLayer;
@@ -34,10 +39,21 @@ public class SwarmerController : MonoBehaviour
 
         SwarmerManager.Instance.Register(this);
         m_manager = SwarmerManager.Instance;
+
+        currentCoord = m_manager.GetCoord(transform.position);
+
+        currentHealth = maxHealth;
     }
 
     protected void Update()
     {
+        Vector2Int newCoord = m_manager.GetCoord(transform.position);
+        if (newCoord != currentCoord)
+        {
+            currentCoord = newCoord;
+            m_manager.UpdateSwarmerPosition(this);
+        }
+
         if (!m_manager.DebugMovement)
         {
             return;
@@ -59,6 +75,21 @@ public class SwarmerController : MonoBehaviour
         }
     }
 
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        // Perform any destruction logic, like playing an animation or sound
+        Debug.Log($"{gameObject.name} has been destroyed.");
+        Destroy(gameObject); // Destroy the swarmer
+    }
 
     // DEBUG 
     private Ray forwardRay;
@@ -396,5 +427,10 @@ public class SwarmerController : MonoBehaviour
         public float LeftDistances;
 
         public float AvoidanceStrength;
+    }
+
+    protected void OnDestroy()
+    {
+        m_manager.Deregister(this); // Deregister when the swarmer is destroyed
     }
 }
