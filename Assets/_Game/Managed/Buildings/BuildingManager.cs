@@ -130,7 +130,7 @@ public class BuildingManager : MonoBehaviour
         {
             if (building.IsDestroyed)
             {
-                Debug.Log("Destroying building");
+                //Debug.Log("Destroying building");
                 destroyedBuildings.Add(building);
             }
         }

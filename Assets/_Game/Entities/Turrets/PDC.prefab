@@ -247,7 +247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectionRange: 100
   closeDetectionRange: 10
-  rotationSpeed: 16.69
+  rotationSpeed: 15
   fireRate: 40
   enemyLayer:
     serializedVersion: 2
@@ -260,7 +260,7 @@ MonoBehaviour:
     type: 3}
   muzzleFlash: {fileID: 0}
   barrelTransform: {fileID: 280430563531001438}
-  barrelRotationSpeed: 500
+  barrelRotationSpeed: 2000
 --- !u!1 &1868255734878103888
 GameObject:
   m_ObjectHideFlags: 0

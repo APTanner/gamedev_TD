@@ -262,7 +262,7 @@ public class TurretController : MonoBehaviour
             GameObject bulletInstance = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         }
 
-        Debug.Log("Firing at target!");
+        //Debug.Log("Firing at target!");
     }
 
     protected virtual void OnStopFiring()

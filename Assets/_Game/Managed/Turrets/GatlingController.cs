@@ -23,7 +23,7 @@ public class GatlingController : TurretController
 
         isFiring = true; 
 
-        Debug.Log("Gatling gun firing!");
+        //Debug.Log("Gatling gun firing!");
     }
 
     private void RotateBarrel()

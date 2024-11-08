@@ -87,7 +87,7 @@ public class SwarmerController : MonoBehaviour
     private void Die()
     {
         // Perform any destruction logic, like playing an animation or sound
-        Debug.Log($"{gameObject.name} has been destroyed.");
+        //Debug.Log($"{gameObject.name} has been destroyed.");
         Destroy(gameObject); // Destroy the swarmer
     }
 
