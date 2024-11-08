@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Entities;
-using Latios;
 
 public class GridManager : MonoBehaviour
 {
@@ -28,32 +26,6 @@ public class GridManager : MonoBehaviour
                 m_cells[yOffset + x] = new GridCell(x, y);
             }
         }
-
-        var latiosWorld = World.DefaultGameObjectInjectionWorld
-            .EntityManager.GetLatiosWorldUnmanaged();
-
-
-        BuildingGridDefines buildingGrid = new BuildingGridDefines
-        {
-            cellSize = Defines.BuildingGridCellSize,
-            width = Width,
-            height = Height,
-        };
-
-        int width =
-            Mathf.CeilToInt(Width * Defines.BuildingGridCellSize / Defines.EnemyGridCellSize);
-        int height =
-            Mathf.CeilToInt(Height * Defines.BuildingGridCellSize / Defines.EnemyGridCellSize);
-
-        EnemyGridDefines enemyGrid = new EnemyGridDefines
-        {
-            cellSize = Defines.EnemyGridCellSize,
-            width = width,
-            height = height
-        };
-
-        latiosWorld.worldBlackboardEntity.AddComponentData(buildingGrid);
-        latiosWorld.worldBlackboardEntity.AddComponentData(enemyGrid);
     }
 
     protected void Start()
