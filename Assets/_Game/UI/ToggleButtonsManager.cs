@@ -30,7 +30,7 @@ public class ToggleButtonsManager : MonoBehaviour
         }
     }
 
-    void ToggleButtonColor(Button clickedButton, IBuildable buildablePrefab)
+    void ToggleButtonColor(Button clickedButton, IBuilding buildablePrefab)
     {
         if (currentHighlightedButton == clickedButton)
         {

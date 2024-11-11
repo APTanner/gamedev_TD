@@ -19,17 +19,20 @@ public struct Obstacle : IGridElement
     }
 }
 
-public interface IBuilding : IGridElement
-{
-    public Vector3 GetPosition();
-    public void TakeDamage(int damage);
-    public bool IsDestroyed { get; }
-}
-
-public interface IBuildable : IGridElement
+public interface IBuilding: IGridElement
 {
     GameObject Prefab { get; }
-    Vector2Int Size { get; } 
+    Vector2Int Size { get; }
+    int Health { get; }
+    bool IsDestroyed { get; }
+    Vector2Int Coordinates { get; }
+
+    void SetCoordinates(Vector2Int coordinates);
+    void TakeDamage(int damage);
+    Vector3 GetPosition();
     bool CanPlaceAt(Vector2Int startCoords, GridManager grid);
     void Place(Vector2Int startCoords, GridManager grid);
+    void RemoveFromGrid(GridManager grid);
 }
+
+

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class TurretController : MonoBehaviour
 {
@@ -20,7 +21,9 @@ public class TurretController : MonoBehaviour
 
     public GameObject bulletPrefab; 
     private float bulletSpeed;
-    public ParticleSystem muzzleFlash; 
+    public VisualEffect muzzleFlashVFX;
+
+    public bool IsPreview { get; set; } = false;
 
     protected virtual void Awake()
     {
@@ -37,10 +40,20 @@ public class TurretController : MonoBehaviour
                 Debug.LogWarning("Bullet prefab does not have a Bullet component with a speed property.");
             }
         }
+
+        if (muzzleFlashVFX != null)
+        {
+            muzzleFlashVFX.Stop();
+        }
     }
 
     protected virtual void Update()
     {
+        if (IsPreview)
+        {
+            return; 
+        }
+
         fireCooldown -= Time.deltaTime;
 
         if (!FindCloseTarget())
@@ -187,18 +200,53 @@ public class TurretController : MonoBehaviour
         }
     }
 
+    //private Vector3 CalculatePredictedPosition(Vector3 targetPosition, Vector3 targetVelocity)
+    //{
+    //    Vector3 directionToTarget = targetPosition - firePoint.position;
+    //    float distanceToTarget = directionToTarget.magnitude;
+
+    //    // Calculate the time it takes for the bullet to reach the target's current position
+    //    float travelTime = distanceToTarget / bulletSpeed;
+
+    //    // Predict the future position of the target based on its velocity and the calculated travel time
+    //    Vector3 predictedPosition = targetPosition + targetVelocity * travelTime;
+
+    //    return predictedPosition;
+    //}
+
+    // chatgpt calculus
     private Vector3 CalculatePredictedPosition(Vector3 targetPosition, Vector3 targetVelocity)
     {
         Vector3 directionToTarget = targetPosition - firePoint.position;
-        float distanceToTarget = directionToTarget.magnitude;
+        float a = targetVelocity.sqrMagnitude - bulletSpeed * bulletSpeed;
+        float b = 2 * Vector3.Dot(targetVelocity, directionToTarget);
+        float c = directionToTarget.sqrMagnitude;
 
-        // Calculate the time it takes for the bullet to reach the target's current position
-        float travelTime = distanceToTarget / bulletSpeed;
+        // Solve the quadratic equation a*t^2 + b*t + c = 0
+        float discriminant = b * b - 4 * a * c;
 
-        // Predict the future position of the target based on its velocity and the calculated travel time
-        Vector3 predictedPosition = targetPosition + targetVelocity * travelTime;
+        if (discriminant < 0)
+        {
+            // No real solution, return current target position
+            return targetPosition;
+        }
 
-        return predictedPosition;
+        float sqrtDiscriminant = Mathf.Sqrt(discriminant);
+        float t1 = (-b + sqrtDiscriminant) / (2 * a);
+        float t2 = (-b - sqrtDiscriminant) / (2 * a);
+
+        // Use the smallest positive time
+        float t = Mathf.Min(t1, t2);
+        if (t < 0) t = Mathf.Max(t1, t2);
+
+        if (t < 0)
+        {
+            // Both times are negative, no interception possible
+            return targetPosition;
+        }
+
+        // Calculate the predicted position
+        return targetPosition + targetVelocity * t;
     }
 
     //private Vector3 CalculatePredictedPosition(Vector3 targetPosition, Vector3 targetVelocity)
@@ -252,9 +300,9 @@ public class TurretController : MonoBehaviour
 
     protected virtual void Fire()
     {
-        if (muzzleFlash != null)
+        if (muzzleFlashVFX != null)
         {
-            muzzleFlash.Play();
+            muzzleFlashVFX.Play();
         }
 
         if (bulletPrefab != null && firePoint != null)

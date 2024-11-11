@@ -77,11 +77,11 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.05
+  m_Time: 0.2
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.3
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -285,7 +285,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 3
+  m_CollisionDetection: 2
 --- !u!114 &2246546460469794600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,3 +301,7 @@ MonoBehaviour:
   speed: 100
   damage: 10
   lifetime: 5
+  ExplosionRadius: 3
+  ExplosionDamage: 5
+  explosionEffectPrefab: {fileID: 6612712872792980774, guid: 49a842ec3e311974fa3c4a87adbc6fd4,
+    type: 3}

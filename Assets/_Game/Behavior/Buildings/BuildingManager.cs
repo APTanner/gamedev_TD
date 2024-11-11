@@ -13,10 +13,15 @@ public class BuildingManager : MonoBehaviour
     public Material invalidPlacementMaterial;
 
     private GameObject previewInstance;
-    private IBuildable currentBuildable;
+    private IBuilding currentBuildable;
     private bool isPlacingObject = false;
+    private bool isDragging = false;
 
-    private List<IBuilding> m_buildings = new(); 
+    private Vector2Int dragStartCoords;
+    private List<Vector2Int> dragCoords = new List<Vector2Int>();
+    private List<GameObject> previewWallInstances = new List<GameObject>();
+
+    private List<IBuilding> m_buildings = new List<IBuilding>();
 
     public static BuildingManager Instance { get; private set; }
 
@@ -24,7 +29,6 @@ public class BuildingManager : MonoBehaviour
     {
         Instance = this;
     }
-
 
     protected void Update()
     {
@@ -45,54 +49,190 @@ public class BuildingManager : MonoBehaviour
         }
 
         GridManager grid = GridManager.Instance;
-        Vector2Int startCoords = grid.GetCoordinates(mousePosition);
+        Vector2Int currentCoords = grid.GetCoordinates(mousePosition);
 
-        // Adjust startCoords to represent the top-left corner based on object size
+        if (currentBuildable is Wall)
+        {
+            if (!isDragging)
+            {
+                ShowStandardPreview(currentCoords, grid);
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    dragStartCoords = currentCoords;
+                    isDragging = true;
+                    ClearStandardPreview();
+                }
+            }
+            else
+            {
+                HandleWallDragging(currentCoords, grid);
+            }
+        }
+        else
+        {
+            HandleStandardPlacement(currentCoords, grid);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            isDragging = false;
+            ClearWallPreview();
+        }
+    }
+
+    private void ShowStandardPreview(Vector2Int currentCoords, GridManager grid)
+    {
+        Vector3 position = GetAlignedPosition(currentCoords, currentBuildable.Size, grid);
+        if (previewInstance == null)
+        {
+            CreatePreview(currentBuildable.Prefab, validPlacementMaterial);
+        }
+
+        bool canPlace = currentBuildable.CanPlaceAt(currentCoords, grid);
+        UpdatePreviewPosition(position, canPlace);
+    }
+
+    private void ClearStandardPreview()
+    {
+        if (previewInstance != null)
+        {
+            Destroy(previewInstance);
+            previewInstance = null;
+        }
+    }
+
+    private void HandleWallDragging(Vector2Int currentCoords, GridManager grid)
+    {
+        dragCoords = GetLineCoordinates(dragStartCoords, currentCoords);
+        UpdateWallPreview(dragCoords, grid);
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (CanPlaceWallLine(dragCoords, grid))
+            {
+                foreach (var coord in dragCoords)
+                {
+                    PlaceObject(coord, grid);
+                }
+            }
+            ClearWallPreview();
+            isDragging = false;
+        }
+    }
+
+    private bool CanPlaceWallLine(List<Vector2Int> coords, GridManager grid)
+    {
+        foreach (var coord in coords)
+        {
+            if (!grid.IsValidCoordinate(coord) || !grid.GetCell(coord).IsEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void HandleStandardPlacement(Vector2Int currentCoords, GridManager grid)
+    {
         Vector2Int adjustedStartCoords = new Vector2Int(
-            startCoords.x + (currentBuildable.Size.x - 1),
-            startCoords.y + (currentBuildable.Size.y - 1)
+            currentCoords.x + (currentBuildable.Size.x - 1),
+            currentCoords.y + (currentBuildable.Size.y - 1)
         );
 
         Vector2Int placementStartCoords = new Vector2Int(
-            startCoords.x + (currentBuildable.Size.x - 1) /2,
-            startCoords.y + (currentBuildable.Size.y - 1) /2
+            currentCoords.x + (currentBuildable.Size.x - 1) / 2,
+            currentCoords.y + (currentBuildable.Size.y - 1) / 2
         );
 
         Vector3 gridPos = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
-
-        // Check if the entire area for the buildable is valid
         bool canPlace = currentBuildable.CanPlaceAt(placementStartCoords, grid);
         UpdatePreviewPosition(gridPos, canPlace);
 
         if (Input.GetMouseButtonDown(0) && canPlace)
         {
-            PlaceObject(startCoords, grid);
-
+            PlaceObject(currentCoords, grid);
         }
     }
 
-    public void SetBuildableObject(IBuildable buildablePrefab)
+    private List<Vector2Int> GetLineCoordinates(Vector2Int start, Vector2Int end)
     {
-        if (isPlacingObject)
+        List<Vector2Int> coordinates = new List<Vector2Int>();
+        int xDiff = Mathf.Abs(end.x - start.x);
+        int yDiff = Mathf.Abs(end.y - start.y);
+        int xStep = end.x > start.x ? 1 : -1;
+        int yStep = end.y > start.y ? 1 : -1;
+        int error = xDiff - yDiff;
+
+        int x = start.x;
+        int y = start.y;
+
+        while (true)
         {
-            StopPlacingObject(); 
+            coordinates.Add(new Vector2Int(x, y));
+            if (x == end.x && y == end.y) break;
+
+            int error2 = 2 * error;
+            if (error2 > -yDiff)
+            {
+                error -= yDiff;
+                x += xStep;
+            }
+            if (error2 < xDiff)
+            {
+                error += xDiff;
+                y += yStep;
+            }
         }
 
-        StartPlacingObject(buildablePrefab); 
+        return coordinates;
     }
 
-    public void StartPlacingObject(IBuildable buildablePrefab)
+    private void UpdateWallPreview(List<Vector2Int> coords, GridManager grid)
     {
-        currentBuildable = buildablePrefab;
-        isPlacingObject = true;
+        ClearWallPreview();
 
-        CreatePreview(buildablePrefab.Prefab, validPlacementMaterial);
+        // Check if the whole wall line can be placed
+        bool canPlaceEntireLine = true;
+
+        foreach (var coord in coords)
+        {
+            if (!grid.IsValidCoordinate(coord) || !grid.GetCell(coord).IsEmpty())
+            {
+                canPlaceEntireLine = false;
+                break;
+            }
+        }
+
+        // Use the appropriate material based on whether the entire line can be placed
+        Material previewMaterial = canPlaceEntireLine ? validPlacementMaterial : invalidPlacementMaterial;
+
+        foreach (var coord in coords)
+        {
+            Vector3 position = GetAlignedPosition(coord, currentBuildable.Size, grid);
+
+            if (currentBuildable.Prefab != null)
+            {
+                GameObject previewWall = Instantiate(currentBuildable.Prefab, position, Quaternion.identity);
+                SetPreviewMaterial(previewWall, previewMaterial);
+                previewWallInstances.Add(previewWall);
+            }
+            else
+            {
+                Debug.LogError("currentBuildable.Prefab is null. Please assign a prefab to the buildable object.");
+            }
+        }
     }
 
-    public void StopPlacingObject()
+
+
+    private void ClearWallPreview()
     {
-        isPlacingObject = false;
-        DestroyPreview();
+        foreach (var instance in previewWallInstances)
+        {
+            Destroy(instance);
+        }
+        previewWallInstances.Clear();
     }
 
     private void PlaceObject(Vector2Int startCoords, GridManager grid)
@@ -108,11 +248,44 @@ public class BuildingManager : MonoBehaviour
         );
 
         Vector3 position = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
-        IBuildable buildableInstance = Instantiate(currentBuildable.Prefab, position, Quaternion.identity).GetComponent<IBuildable>();
+        IBuilding buildableInstance = Instantiate(currentBuildable.Prefab, position, Quaternion.identity).GetComponent<IBuilding>();
         buildableInstance.Place(placementStartCoords, grid);
 
-        // Register the placed building as an IBuilding for cleanup tracking
-        Register((IBuilding)buildableInstance);
+        Register(buildableInstance);
+    }
+
+    public void SetBuildableObject(IBuilding buildablePrefab)
+    {
+        if (isPlacingObject)
+        {
+            StopPlacingObject();
+        }
+
+        StartPlacingObject(buildablePrefab);
+    }
+
+    public void StartPlacingObject(IBuilding buildablePrefab)
+    {
+        currentBuildable = buildablePrefab;
+        isPlacingObject = true;
+
+        CreatePreview(buildablePrefab.Prefab, validPlacementMaterial);
+    }
+
+    public void StopPlacingObject()
+    {
+        isPlacingObject = false;
+        DestroyPreview();
+        ClearWallPreview();
+    }
+
+    private void DestroyPreview()
+    {
+        if (previewInstance != null)
+        {
+            Destroy(previewInstance);
+            previewInstance = null;
+        }
     }
 
     public void Register(IBuilding building)
@@ -125,33 +298,28 @@ public class BuildingManager : MonoBehaviour
 
     public void CleanupBuildings()
     {
-        List<IBuilding> destroyedBuildings = new();
+        List<IBuilding> destroyedBuildings = new List<IBuilding>();
         foreach (IBuilding building in m_buildings)
         {
             if (building.IsDestroyed)
             {
-                //Debug.Log("Destroying building");
                 destroyedBuildings.Add(building);
             }
         }
 
-        GridManager grid = GridManager.Instance;
         foreach (IBuilding building in destroyedBuildings)
         {
             m_buildings.Remove(building);
-            grid.GetCell(building.Coordinates).ClearElement();
-            Component c = building as Component;
-            Destroy(c.gameObject);
+            building.RemoveFromGrid(GridManager.Instance);
+            Destroy((building as Component).gameObject);
         }
     }
 
     private Vector3 GetAlignedPosition(Vector2Int startCoords, Vector2Int objectSize, GridManager grid)
     {
-
         Vector3 cellCenter = grid.GetCellCenter(startCoords);
-        float offsetX = (objectSize.x - 1); 
-        float offsetY = (objectSize.y - 1); 
-
+        float offsetX = (objectSize.x - 1);
+        float offsetY = (objectSize.y - 1);
 
         return new Vector3(cellCenter.x - offsetX, cellCenter.y, cellCenter.z - offsetY);
     }
@@ -159,35 +327,30 @@ public class BuildingManager : MonoBehaviour
     private void CreatePreview(GameObject prefab, Material initialMaterial)
     {
         previewInstance = Instantiate(prefab);
-        SetPreviewMaterial(initialMaterial);
+
+        TurretController turretPreview = previewInstance.GetComponent<TurretController>();
+        if (turretPreview != null)
+        {
+            turretPreview.IsPreview = true;
+        }
+
+        SetPreviewMaterial(previewInstance, initialMaterial);
     }
 
-    private void UpdatePreviewPosition(Vector3 position, bool canPlace)
+    private void SetPreviewMaterial(GameObject instance, Material material)
     {
-        Vector3 alignedPosition = GetAlignedPosition(
-            GridManager.Instance.GetCoordinates(position),
-            currentBuildable.Size,
-            GridManager.Instance
-        );
-
-        previewInstance.transform.position = alignedPosition;
-        SetPreviewMaterial(canPlace ? validPlacementMaterial : invalidPlacementMaterial);
-    }
-
-    private void SetPreviewMaterial(Material material)
-    {
-        foreach (Renderer renderer in previewInstance.GetComponentsInChildren<Renderer>())
+        foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>())
         {
             renderer.material = material;
         }
     }
 
-    private void DestroyPreview()
+    private void UpdatePreviewPosition(Vector3 position, bool canPlace)
     {
         if (previewInstance != null)
         {
-            Destroy(previewInstance);
-            previewInstance = null;
+            previewInstance.transform.position = position;
+            SetPreviewMaterial(previewInstance, canPlace ? validPlacementMaterial : invalidPlacementMaterial);
         }
     }
 
