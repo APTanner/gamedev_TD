@@ -26,7 +26,9 @@ public class SwarmerController : MonoBehaviour
     public bool IsAttacking => m_bAttacking;
     public IBuilding Target => m_target;
 
-    private Vector2Int currentCoord;
+    // 'EGrid' is enemy grid
+    // this is to differentiate between the building grid and the enemy grid
+    public Vector2Int EGridCoord { get; set; }
 
     protected void Awake()
     {
@@ -40,20 +42,11 @@ public class SwarmerController : MonoBehaviour
         SwarmerManager.Instance.Register(this);
         m_manager = SwarmerManager.Instance;
 
-        currentCoord = m_manager.GetCoord(transform.position);
-
         currentHealth = maxHealth;
     }
 
     protected void Update()
     {
-        Vector2Int newCoord = m_manager.GetCoord(transform.position);
-        if (newCoord != currentCoord)
-        {
-            currentCoord = newCoord;
-            m_manager.UpdateSwarmerPosition(this);
-        }
-
         if (!m_manager.DebugMovement)
         {
             return;
@@ -250,6 +243,7 @@ public class SwarmerController : MonoBehaviour
         //transform.rotation = targetRotation;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, m_manager.TurnSpeed * Time.fixedDeltaTime);
         Move(d);
+
     }
 
     private void HandleTargetSelection(ref AvoidanceDistances d, in RaycastHit center, in RaycastHit right, in RaycastHit left)
@@ -313,7 +307,7 @@ public class SwarmerController : MonoBehaviour
                 left.collider.gameObject.layer == Defines.EnvironmentLayer ?
                 left.distance : 0;
         }
-        
+
         if (m_target != null)
         {
             Debug.DrawLine(transform.position, m_target.GetPosition(), Color.black);

@@ -37,7 +37,7 @@ public class SwarmerManager : MonoBehaviour
 
     private List<SwarmerController> m_swarmers = new();
     private Dictionary<Vector2Int, Vector2> m_averageHeading = new();
-    private Dictionary<Vector2Int, List<SwarmerController>> enemiesByCell = new();
+    private Dictionary<Vector2Int, List<SwarmerController>> m_enemiesByCell = new();
 
     protected void Awake()
     {
@@ -76,7 +76,7 @@ public class SwarmerManager : MonoBehaviour
     public void Register(SwarmerController swarmer)
     {
         m_swarmers.Add(swarmer);
-        UpdateSwarmerPosition(swarmer);
+        AssignSwarmerToGrid(swarmer);
     }
 
     protected void FixedUpdate()
@@ -103,6 +103,7 @@ public class SwarmerManager : MonoBehaviour
         foreach (var swarmer in m_swarmers)
         {
             swarmer.UpdateSwarmer();
+            UpdateSwarmerGridPosition(swarmer);
 
             if (swarmer.IsAttacking)
             {
@@ -116,9 +117,7 @@ public class SwarmerManager : MonoBehaviour
         }
         foreach (var swarmer in swarmersToRemove)
         {
-            m_swarmers.Remove(swarmer);
             Destroy(swarmer.gameObject);
-            RemoveFromCell(swarmer);
         }
 
         BuildingManager.Instance.CleanupBuildings();
@@ -137,6 +136,12 @@ public class SwarmerManager : MonoBehaviour
     public Vector2Int GetCoord(Vector3 pos)
     {
         return new(Mathf.FloorToInt(pos.x / CellSize), Mathf.FloorToInt(pos.z / CellSize));
+    }
+
+    public Vector3 GetCellPosition(Vector2Int coord)
+    {
+        float halfCellSize = CellSize * 0.5f;
+        return new Vector3((coord.x * CellSize) + halfCellSize, 0, (coord.y * CellSize) + halfCellSize);
     }
 
 
@@ -171,48 +176,54 @@ public class SwarmerManager : MonoBehaviour
         }
     }
 
-    public void UpdateSwarmerPosition(SwarmerController swarmer)
+    public void AssignSwarmerToGrid(SwarmerController swarmer)
     {
-        // Remove the swarmer from its old cell
-        RemoveFromCell(swarmer);
-
-        // Get the new grid coordinate for the swarmer
         Vector2Int coord = GetCoord(swarmer.transform.position);
+        swarmer.EGridCoord = coord;
 
-        // Add the swarmer to the new cell
-        if (!enemiesByCell.ContainsKey(coord))
+        if (!m_enemiesByCell.ContainsKey(coord))
         {
-            enemiesByCell[coord] = new List<SwarmerController>();
+            m_enemiesByCell[coord] = new();
         }
-        enemiesByCell[coord].Add(swarmer);
+
+        m_enemiesByCell[coord].Add(swarmer);
     }
 
-    private void RemoveFromCell(SwarmerController swarmer)
+    public void UpdateSwarmerGridPosition(SwarmerController swarmer)
     {
-        Vector2Int oldCoord = GetCoord(swarmer.transform.position);
-        if (enemiesByCell.ContainsKey(oldCoord))
+        Vector2Int currentCoord = GetCoord(swarmer.transform.position);
+        if (currentCoord == swarmer.EGridCoord)
         {
-            enemiesByCell[oldCoord].Remove(swarmer);
-            if (enemiesByCell[oldCoord].Count == 0)
-            {
-                enemiesByCell.Remove(oldCoord); // Remove the cell entry if empty
-            }
+            return;
+        }
+
+        RemoveSwarmerFromGrid(swarmer);
+        AssignSwarmerToGrid(swarmer);
+    }
+    private void RemoveSwarmerFromGrid(SwarmerController swarmer)
+    {
+        Vector2Int coord = swarmer.EGridCoord;
+        m_enemiesByCell[coord].Remove(swarmer);
+        if (m_enemiesByCell[coord].Count == 0)
+        {
+            m_enemiesByCell.Remove(coord); // Remove the cell entry if empty
         }
     }
 
+    private static readonly List<SwarmerController> s_emptyCell = new();
     public List<SwarmerController> GetEnemiesInCell(Vector2Int coord)
     {
-        if (enemiesByCell.ContainsKey(coord))
+        if (m_enemiesByCell.ContainsKey(coord))
         {
-            return enemiesByCell[coord];
+            return m_enemiesByCell[coord];
         }
-        return new List<SwarmerController>(); // Return an empty list if no enemies are in the cell
+        return s_emptyCell; // Return an empty list if no enemies are in the cell
     }
 
     public void Deregister(SwarmerController swarmer)
     {
         m_swarmers.Remove(swarmer);
-        RemoveFromCell(swarmer); // Remove swarmer from the dictionary
+        RemoveSwarmerFromGrid(swarmer); // Remove swarmer from the dictionary
     }
 }
 

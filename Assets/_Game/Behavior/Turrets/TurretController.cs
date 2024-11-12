@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -8,18 +8,18 @@ public class TurretController : MonoBehaviour
     public float closeDetectionRange = 5f; // Range for sphere cast
     public float rotationSpeed = 5f;
     public float fireRate = 1f;
-    public LayerMask enemyLayer; 
+    public LayerMask enemyLayer;
 
     public float minVerticalAimDistance = 5f;
 
-    private MonoBehaviour currentTarget; 
+    private MonoBehaviour currentTarget;
     private float fireCooldown = 0f;
 
     public Transform turretBase;
     public Transform gunPivot;
     public Transform firePoint;
 
-    public GameObject bulletPrefab; 
+    public GameObject bulletPrefab;
     private float bulletSpeed;
     public VisualEffect muzzleFlashVFX;
 
@@ -32,7 +32,7 @@ public class TurretController : MonoBehaviour
             Bullet bulletComponent = bulletPrefab.GetComponent<Bullet>();
             if (bulletComponent != null)
             {
-                bulletSpeed = bulletComponent.speed; 
+                bulletSpeed = bulletComponent.speed;
                 //Debug.Log("Bullet speed: " + bulletSpeed);
             }
             else
@@ -51,7 +51,7 @@ public class TurretController : MonoBehaviour
     {
         if (IsPreview)
         {
-            return; 
+            return;
         }
 
         fireCooldown -= Time.deltaTime;
@@ -110,50 +110,102 @@ public class TurretController : MonoBehaviour
         return false;
     }
 
+    private static readonly int[] signs = { -1, 1 };
     private void FindGridTarget()
     {
         Vector2Int turretCoord = SwarmerManager.Instance.GetCoord(transform.position);
-        Queue<Vector2Int> queue = new Queue<Vector2Int>();
-        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
-        queue.Enqueue(turretCoord);
+        float gridCellSize = SwarmerManager.Instance.CellSize;
+        int maxCellRange = Mathf.CeilToInt(detectionRange / gridCellSize);
 
-        while (queue.Count > 0)
+        // special case to check current cell
+        var list = SwarmerManager.Instance.GetEnemiesInCell(turretCoord);
+        if (list.Count > 0)
         {
-            Vector2Int currentCoord = queue.Dequeue();
-            if (visited.Contains(currentCoord)) continue;
-            visited.Add(currentCoord);
+            currentTarget = list[0];
+        }
 
-            Vector3 cellCenter = new Vector3(currentCoord.x * SwarmerManager.Instance.CellSize, 0, currentCoord.y * SwarmerManager.Instance.CellSize);
-            float distance = Vector3.Distance(transform.position, cellCenter);
+        // exits early for searching in a certain direction
+        //                     NW     NE    SW    SE    WS   WN     ES    EW
+        bool[] searchSpace = { true, true, true, true, true, true, true, true };
 
-            if (distance > detectionRange) continue; 
+        for (int d = 1; d <= maxCellRange; ++d)
+        {
 
-            foreach (SwarmerController swarmer in SwarmerManager.Instance.GetEnemiesInCell(currentCoord))
+            for (int i = 0; i < searchSpace.Length; ++i)
             {
-                if (swarmer != null)
-                {
-                    currentTarget = swarmer;
-                    return;
-                }
+                searchSpace[i] = true;
             }
 
-            Vector2Int[] neighbors = {
-                new Vector2Int(currentCoord.x + 1, currentCoord.y),
-                new Vector2Int(currentCoord.x - 1, currentCoord.y),
-                new Vector2Int(currentCoord.x, currentCoord.y + 1),
-                new Vector2Int(currentCoord.x, currentCoord.y - 1)
-            };
-
-            foreach (var neighbor in neighbors)
+            for (int o = 0; o <= d && Array.Exists(searchSpace, v => v); ++o)
             {
-                if (!visited.Contains(neighbor))
+                foreach (int sign in signs)
                 {
-                    queue.Enqueue(neighbor);
+                    // Check vertical samples
+                    if (searchSpace[(sign+1)/2 + 0] && TryGetGridTarget(
+                            turretCoord.x + (o * sign),
+                            turretCoord.y + d,
+                            ref searchSpace[(sign+1)/2])
+                        ||
+                        searchSpace[(sign+1)/2 + 2] && TryGetGridTarget(
+                            turretCoord.x + (o * sign),
+                            turretCoord.y - d,
+                            ref searchSpace[(sign+1)/2 + 2]))
+                    {
+                        return;
+                    }
+
+                    // If we are checking the farthest offset (o value) then the corners have already
+                    // been taken care of by the vertical samples. No need to check the horizontal 
+                    // ones since they are duplicates
+                    if (o == d) continue;
+
+                    // Check horizontal samples
+                    if (searchSpace[(sign+1)/2 + 4] && TryGetGridTarget(
+                            turretCoord.x - d,
+                            turretCoord.y + (o * sign),
+                            ref searchSpace[(sign+1)/2 + 4])
+                        ||
+                        searchSpace[(sign+1)/2 + 6] && TryGetGridTarget(
+                            turretCoord.x + d,
+                            turretCoord.y + (o * sign),
+                            ref searchSpace[(sign+1)/2 + 6]))
+                    {
+                        return;
+                    }
                 }
             }
         }
 
-        currentTarget = null; 
+        currentTarget = null;
+    }
+
+    private bool TryGetGridTarget(int x, int y, ref bool continueSearch)
+    {
+        float cellSize = SwarmerManager.Instance.CellSize;
+        float sqrRange = MathFunctions.Square(detectionRange);
+
+
+        Vector2Int coord = new Vector2Int(x, y);
+        Vector3 cellPosition = SwarmerManager.Instance.GetCellPosition(coord);
+
+        // If the closests extents of the cell are beyond our reach just return false
+        // This also means that any other cell in this direction at this distance will be further 
+        // away, so we can stop searching in this direction
+        if (Vector3.Distance(cellPosition, transform.position) - cellSize > detectionRange)
+        {
+            continueSearch = false;
+            return false;
+        }
+
+        foreach (var target in SwarmerManager.Instance.GetEnemiesInCell(coord))
+        {
+            if ((target.transform.position - transform.position).sqrMagnitude <= sqrRange)
+            {
+                currentTarget = target;
+                return true;
+            }
+        }
+        return false;
     }
 
     private void RotateToFaceTarget()
@@ -169,11 +221,11 @@ public class TurretController : MonoBehaviour
         if (currentTarget is SwarmerController enemy)
         {
             targetPosition = enemy.transform.position;
-            targetVelocity = enemy.GetComponent<Rigidbody>().linearVelocity; 
+            targetVelocity = enemy.GetComponent<Rigidbody>().linearVelocity;
         }
         else
         {
-            return; 
+            return;
         }
 
         Vector3 predictedPosition = CalculatePredictedPosition(targetPosition, targetVelocity);
