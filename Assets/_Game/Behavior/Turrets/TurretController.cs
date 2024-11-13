@@ -12,7 +12,7 @@ public class TurretController : MonoBehaviour
 
     public float minVerticalAimDistance = 5f;
 
-    private MonoBehaviour currentTarget;
+    protected MonoBehaviour currentTarget;
     private float fireCooldown = 0f;
 
     public Transform turretBase;
@@ -20,7 +20,7 @@ public class TurretController : MonoBehaviour
     public Transform firePoint;
 
     public GameObject bulletPrefab;
-    private float bulletSpeed;
+    protected float bulletSpeed;
     public VisualEffect muzzleFlashVFX;
 
     public bool IsPreview { get; set; } = false;
@@ -208,7 +208,7 @@ public class TurretController : MonoBehaviour
         return false;
     }
 
-    private void RotateToFaceTarget()
+    protected virtual void RotateToFaceTarget()
     {
         if (currentTarget == null)
         {
@@ -252,22 +252,8 @@ public class TurretController : MonoBehaviour
         }
     }
 
-    //private Vector3 CalculatePredictedPosition(Vector3 targetPosition, Vector3 targetVelocity)
-    //{
-    //    Vector3 directionToTarget = targetPosition - firePoint.position;
-    //    float distanceToTarget = directionToTarget.magnitude;
-
-    //    // Calculate the time it takes for the bullet to reach the target's current position
-    //    float travelTime = distanceToTarget / bulletSpeed;
-
-    //    // Predict the future position of the target based on its velocity and the calculated travel time
-    //    Vector3 predictedPosition = targetPosition + targetVelocity * travelTime;
-
-    //    return predictedPosition;
-    //}
-
     // chatgpt calculus
-    private Vector3 CalculatePredictedPosition(Vector3 targetPosition, Vector3 targetVelocity)
+    protected virtual Vector3 CalculatePredictedPosition(Vector3 targetPosition, Vector3 targetVelocity)
     {
         Vector3 directionToTarget = targetPosition - firePoint.position;
         float a = targetVelocity.sqrMagnitude - bulletSpeed * bulletSpeed;
