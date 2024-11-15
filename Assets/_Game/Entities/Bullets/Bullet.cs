@@ -3,6 +3,8 @@ using UnityEngine.VFX;
 
 public class Bullet : MonoBehaviour
 {
+    public int penetration = 0;
+
     public float speed = 100f;
     public float damage = 1f;
     public float lifetime = 5f;
@@ -38,19 +40,29 @@ public class Bullet : MonoBehaviour
             };
         }
 
-        if (collision.gameObject.TryGetComponent<SwarmerController>(out var enemy))
-        {
-            enemy.TakeDamage(damage);
-        }
-
         if (explosionEffectPrefab != null)
         {
             VisualEffect explosion = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-            explosion.Play(); 
+            explosion.Play();
 
-            Destroy(explosion.gameObject, explosion.GetFloat("Duration")); 
+            Destroy(explosion.gameObject, explosion.GetFloat("Duration"));
         }
 
-        Destroy(gameObject);
+        if (collision.gameObject.TryGetComponent<SwarmerController>(out var enemy))
+        {
+            enemy.TakeDamage(damage);
+            if (penetration > 0)
+            {
+                --penetration;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+        else
+        {
+            //Destroy(gameObject);
+        }
     }
 }
