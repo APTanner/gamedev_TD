@@ -233,7 +233,7 @@ public class TurretController : MonoBehaviour
         // Horizontal rotation (Y-axis)
         Vector3 horizontalDirection = new Vector3(predictedPosition.x - transform.position.x, 0f, predictedPosition.z - transform.position.z).normalized;
         Quaternion horizontalLookRotation = Quaternion.LookRotation(horizontalDirection);
-        turretBase.rotation = Quaternion.Slerp(turretBase.rotation, horizontalLookRotation, Time.deltaTime * rotationSpeed);
+        turretBase.rotation = Quaternion.RotateTowards(turretBase.rotation, horizontalLookRotation, Time.deltaTime * rotationSpeed);
 
         // Distance to the predicted position
         float distanceToTarget = Vector3.Distance(transform.position, predictedPosition);

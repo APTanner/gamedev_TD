@@ -3,6 +3,8 @@ using UnityEngine;
 
 public static class MathFunctions
 {
+    public static float Sqrt2 = 1.4142135f;
+
     public static float2 ClampMagnitude(float2 v, float magnitude)
     {
         return math.select(

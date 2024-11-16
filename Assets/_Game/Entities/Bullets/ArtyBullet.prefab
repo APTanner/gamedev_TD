@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 1271055210905832512}
   - component: {fileID: 3488938060195345906}
   - component: {fileID: 3848606533923038241}
-  - component: {fileID: 2246546460469794600}
+  - component: {fileID: 6824182433059438767}
   m_Layer: 9
   m_Name: ArtyBullet
   m_TagString: Untagged
@@ -286,7 +286,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &2246546460469794600
+--- !u!114 &6824182433059438767
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -295,9 +295,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4140244386451833446}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 156c4c2d43ac4d7429a7988e907c55f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ffbaa1fa9d9a534bb4a3977f8cb617d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  penetration: 0
   speed: 30
   damage: 50
   lifetime: 15

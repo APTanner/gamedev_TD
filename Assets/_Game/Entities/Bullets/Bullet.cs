@@ -13,17 +13,17 @@ public class Bullet : MonoBehaviour
 
     public VisualEffect explosionEffectPrefab;
 
-    private Rigidbody rb;
+    protected Rigidbody rb;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         rb.linearVelocity = transform.forward * speed;
-        Destroy(gameObject, lifetime); 
+        Destroy(gameObject, lifetime);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -51,18 +51,12 @@ public class Bullet : MonoBehaviour
         if (collision.gameObject.TryGetComponent<SwarmerController>(out var enemy))
         {
             enemy.TakeDamage(damage);
-            if (penetration > 0)
-            {
-                --penetration;
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            --penetration;
         }
-        else
+
+        if (penetration <= 0)
         {
-            //Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }
