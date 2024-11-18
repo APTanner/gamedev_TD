@@ -717,7 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectionRange: 200
   closeDetectionRange: 5
-  rotationSpeed: 5
+  rotationSpeed: 1000
   fireRate: 1
   enemyLayer:
     serializedVersion: 2
