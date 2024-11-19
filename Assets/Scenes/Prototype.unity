@@ -2854,6 +2854,7 @@ MonoBehaviour:
   panSmoothSpeed: 10
   mouseMovementThreshold: 0.01
   maxPanDistance: 10
+  arrowRotationSpeed: 0.1
   horizontalSensitivity: 0.05
   verticalSensitivity: 0.05
 --- !u!1 &553051038

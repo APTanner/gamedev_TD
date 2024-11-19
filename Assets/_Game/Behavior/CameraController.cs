@@ -12,6 +12,8 @@ public class CameraController : MonoBehaviour
     public float mouseMovementThreshold = 0.01f; // Threshold for detecting significant mouse movement
     public float maxPanDistance = 10f; // Maximum distance for a single pan update
 
+    public float arrowRotationSpeed = 0.1f;
+
     public float horizontalSensitivity = 0.5f; // Sensitivity for horizontal mouse movement
     public float verticalSensitivity = 0.5f; // Sensitivity for vertical mouse movement
 
@@ -53,6 +55,32 @@ public class CameraController : MonoBehaviour
 
             // Tilt up and down (vertical rotation only on child camera)
             float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x - mouseY * verticalSpeed, 10f, 80f);
+            childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow)) 
+        {
+            // Rotate around the y-axis (horizontal rotation on main camera)
+            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y - arrowRotationSpeed, 0f);
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow)) 
+        {
+            // Rotate around the y-axis (horizontal rotation on main camera)
+            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + arrowRotationSpeed, 0f);
+        }
+
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            // Tilt up and down (vertical rotation only on child camera)
+            float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x - arrowRotationSpeed, 10f, 80f);
+            childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            // Tilt up and down (vertical rotation only on child camera)
+            float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x + arrowRotationSpeed, 10f, 80f);
             childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
         }
 
