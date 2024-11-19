@@ -51,6 +51,7 @@ public class Bullet : MonoBehaviour
         if (collision.gameObject.TryGetComponent<SwarmerController>(out var enemy))
         {
             enemy.TakeDamage(damage);
+            rb.linearVelocity = transform.forward * speed;
             --penetration;
         }
 
