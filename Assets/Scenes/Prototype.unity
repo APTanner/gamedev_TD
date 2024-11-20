@@ -332,6 +332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 4830168334832530796, guid: 93f50a862f79b724b89f8ccb81c9484a,
     type: 3}
+  isBuildingButton: 1
 --- !u!1 &17488745
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,6 +743,7 @@ GameObject:
   - component: {fileID: 135376828}
   - component: {fileID: 135376827}
   - component: {fileID: 135376826}
+  - component: {fileID: 135376829}
   m_Layer: 5
   m_Name: UpgradeButton4
   m_TagString: Untagged
@@ -851,6 +853,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 135376824}
   m_CullTransparentMesh: 1
+--- !u!114 &135376829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135376824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPrefab: {fileID: 0}
+  isBuildingButton: 0
 --- !u!1 &162629071
 GameObject:
   m_ObjectHideFlags: 0
@@ -2189,6 +2205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: -7844652027052065090, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
     type: 3}
+  isBuildingButton: 1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -2446,6 +2463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 7011781605363834137, guid: ff14438ead072d949b10349d8251c84c,
     type: 3}
+  isBuildingButton: 1
 --- !u!1 &441394860
 GameObject:
   m_ObjectHideFlags: 0
@@ -3370,6 +3388,7 @@ GameObject:
   - component: {fileID: 689187099}
   - component: {fileID: 689187098}
   - component: {fileID: 689187097}
+  - component: {fileID: 689187100}
   m_Layer: 5
   m_Name: Structure2Button
   m_TagString: Untagged
@@ -3479,6 +3498,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 689187095}
   m_CullTransparentMesh: 1
+--- !u!114 &689187100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689187095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPrefab: {fileID: 0}
+  isBuildingButton: 0
 --- !u!1 &725837187
 GameObject:
   m_ObjectHideFlags: 0
@@ -4327,6 +4360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 1209013205768510786, guid: da69a6f2c2d845c41b6872fda32cfc11,
     type: 3}
+  isBuildingButton: 1
 --- !u!1 &874086443
 GameObject:
   m_ObjectHideFlags: 0
@@ -5021,7 +5055,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ----
+  m_text: HQ
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8a804f2c7689ab84f8ce076d72f4f1e7, type: 2}
   m_sharedMaterial: {fileID: 6833412391909396584, guid: 8a804f2c7689ab84f8ce076d72f4f1e7,
@@ -5325,8 +5359,9 @@ GameObject:
   - component: {fileID: 1200613878}
   - component: {fileID: 1200613877}
   - component: {fileID: 1200613876}
+  - component: {fileID: 1200613879}
   m_Layer: 5
-  m_Name: UpgradeButton2
+  m_Name: HQButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5434,6 +5469,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1200613874}
   m_CullTransparentMesh: 1
+--- !u!114 &1200613879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200613874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPrefab: {fileID: -169908826129843350, guid: a447606d6ccacd840a74187ded09ff81,
+    type: 3}
+  isBuildingButton: 1
 --- !u!1 &1240856666
 GameObject:
   m_ObjectHideFlags: 0
@@ -5565,6 +5615,7 @@ GameObject:
   - component: {fileID: 1388308690}
   - component: {fileID: 1388308689}
   - component: {fileID: 1388308688}
+  - component: {fileID: 1388308691}
   m_Layer: 5
   m_Name: EnemiesButton
   m_TagString: Untagged
@@ -5686,6 +5737,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388308686}
   m_CullTransparentMesh: 1
+--- !u!114 &1388308691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388308686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPrefab: {fileID: 0}
+  isBuildingButton: 0
 --- !u!1 &1410444148
 GameObject:
   m_ObjectHideFlags: 0
@@ -6066,6 +6131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 2267166409237826672, guid: a87c7b3981d591f459f659b2445f55dd,
     type: 3}
+  isBuildingButton: 1
 --- !u!1 &1563733439
 GameObject:
   m_ObjectHideFlags: 0
@@ -6291,6 +6357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: -1262100074724534620, guid: a7a28c5d9489a4342a8a13298cca2696,
     type: 3}
+  isBuildingButton: 1
 --- !u!1 &1616799424
 GameObject:
   m_ObjectHideFlags: 0
@@ -6731,7 +6798,7 @@ MonoBehaviour:
   ObstacleWeight: 1
   SeparationWeight: 4
   DebugMovement: 0
-  targetDestroyDistance: 4
+  targetDestroyDistance: 0
   AttackDistance: 10
   AttackDamage: 1
   CellSize: 10
@@ -7614,7 +7681,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &5451032157087419827
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,12 +21,19 @@ public class ToggleButtonsManager : MonoBehaviour
 
             if (buildingButton != null)
             {
-                button.onClick.AddListener(() => ToggleButtonColor(button, buildingButton.buildingPrefab));
+                if (buildingButton.isBuildingButton)
+                {
+                    button.onClick.AddListener(() => ToggleButtonColor(button, buildingButton.buildingPrefab));
+                }
+                else
+                {
+                    button.onClick.AddListener(() => ToggleNonBuildingButton(button));
+                }
             }
-            else 
-            {
-                button.onClick.AddListener(() => ToggleNonBuildingButton(button));
-            }
+            //else 
+            //{
+            //    button.onClick.AddListener(() => ToggleNonBuildingButton(button));
+            //}
         }
     }
 
@@ -40,7 +47,7 @@ public class ToggleButtonsManager : MonoBehaviour
         }
         else
         {
-            if (currentHighlightedButton != null && currentHighlightedButton.GetComponent<BuildingButton>() == null)
+            if (currentHighlightedButton != null && !currentHighlightedButton.GetComponent<BuildingButton>().isBuildingButton)
             {
                 currentHighlightedButton.onClick.Invoke();
             }
@@ -62,7 +69,7 @@ public class ToggleButtonsManager : MonoBehaviour
     {
         buildingManager.StopPlacingObject();
 
-        if (currentHighlightedButton != null && currentHighlightedButton != clickedButton && currentHighlightedButton.GetComponent<BuildingButton>() == null)
+        if (currentHighlightedButton != null && currentHighlightedButton != clickedButton && !currentHighlightedButton.GetComponent<BuildingButton>().isBuildingButton)
         {
             currentHighlightedButton.onClick.Invoke();
         }
