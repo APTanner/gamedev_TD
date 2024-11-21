@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class GatlingController : TurretController
 {
-    public Transform barrelTransform; 
-    public float barrelRotationSpeed = 1000f; 
+    public Transform barrelTransform;
+    public float barrelRotationSpeed = 1000f;
 
     private bool isFiring = false;
 
-    private void Update()
+    protected override void Update()
     {
         base.Update();
 
@@ -19,9 +19,9 @@ public class GatlingController : TurretController
 
     protected override void Fire()
     {
-        base.Fire(); 
+        base.Fire();
 
-        isFiring = true; 
+        isFiring = true;
 
         //Debug.Log("Gatling gun firing!");
     }
@@ -36,6 +36,6 @@ public class GatlingController : TurretController
 
     protected override void OnStopFiring()
     {
-        isFiring = false; 
+        isFiring = false;
     }
 }

@@ -8,4 +8,7 @@ public static class Defines
     public const int EnvironmentLayer = 6;
     public const int SwarmerLayer = 7;
     public const int PlayerLayer = 8;
+
+    // In degrees
+    public const float TurretAimTolerance = 2;
 }

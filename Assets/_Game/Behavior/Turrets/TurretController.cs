@@ -63,8 +63,8 @@ public class TurretController : MonoBehaviour
 
         if (currentTarget != null)
         {
-            RotateToFaceTarget();
-            if (fireCooldown <= 0f && IsTargetInRange())
+            bool bIsAimed = RotateToFaceTarget();
+            if (fireCooldown <= 0f && bIsAimed && IsTargetInRange())
             {
                 Fire();
                 fireCooldown = 1f / fireRate;
@@ -208,11 +208,11 @@ public class TurretController : MonoBehaviour
         return false;
     }
 
-    protected virtual void RotateToFaceTarget()
+    protected virtual bool RotateToFaceTarget()
     {
         if (currentTarget == null)
         {
-            return;
+            return false;
         }
 
         Vector3 targetPosition;
@@ -225,7 +225,7 @@ public class TurretController : MonoBehaviour
         }
         else
         {
-            return;
+            return false;
         }
 
         Vector3 predictedPosition = CalculatePredictedPosition(targetPosition, targetVelocity);
@@ -234,6 +234,8 @@ public class TurretController : MonoBehaviour
         Vector3 horizontalDirection = new Vector3(predictedPosition.x - transform.position.x, 0f, predictedPosition.z - transform.position.z).normalized;
         Quaternion horizontalLookRotation = Quaternion.LookRotation(horizontalDirection);
         turretBase.rotation = Quaternion.RotateTowards(turretBase.rotation, horizontalLookRotation, Time.deltaTime * rotationSpeed);
+
+        float angleFromTarget = Quaternion.Angle(turretBase.rotation, horizontalLookRotation);
 
         // Distance to the predicted position
         float distanceToTarget = Vector3.Distance(transform.position, predictedPosition);
@@ -250,6 +252,9 @@ public class TurretController : MonoBehaviour
 
             gunPivot.localRotation = Quaternion.Euler(-adjustedAngle, 0f, 0f);
         }
+
+        // Hardcoded because 
+        return angleFromTarget <= Defines.TurretAimTolerance;
     }
 
     // chatgpt calculus
