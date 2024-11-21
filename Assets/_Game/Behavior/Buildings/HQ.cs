@@ -13,7 +13,7 @@ public class HQ : BuildableObject
     protected override void Awake()
     {
         base.Awake();
-        Health = 10000;
+        Health = 1000;
         maxHealth = Health;
         IsSellable = false;
 
