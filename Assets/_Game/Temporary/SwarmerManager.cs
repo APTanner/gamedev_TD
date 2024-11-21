@@ -229,10 +229,10 @@ public class SwarmerManager : MonoBehaviour
 
     public void Reset()
     {
-        foreach (var swarmer in m_swarmers)
+        var arrayCopy = m_swarmers.ToArray();
+        foreach (var swarmer in arrayCopy)
         {
-            Destroy(swarmer);
-            Deregister(swarmer);
+            Destroy(swarmer.gameObject);
         }
     }
 

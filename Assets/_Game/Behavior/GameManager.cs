@@ -13,11 +13,14 @@ public class GameManager : MonoBehaviour
     private int m_currentWave = 1;
     private bool m_bInWave = false;
 
+    private float m_waveTime = 0;
+
     private List<EnemySpawner>[] m_spawners = new List<EnemySpawner>[0];
 
     [SerializeField] private TMP_Text waveText;
 
     public int WaveCount => m_spawners.Length;
+    public float TimeLeftInWave => m_waveTime;
 
     // The index of the current Wave
     public static event Action<int> OnWaveStart;
@@ -81,10 +84,11 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        m_waveTime -= Time.fixedDeltaTime;
+
         SwarmerManager sm = SwarmerManager.Instance;
-        Debug.Log(sm.SwarmerCount);
         // if everything has been killed
-        if (sm.SwarmerCount == 0 /* || timer */)
+        if (sm.SwarmerCount == 0 || m_waveTime < 0)
         {
             EndWave();
         }
@@ -114,6 +118,7 @@ public class GameManager : MonoBehaviour
             spawner.SpawnSwarmers();
         }
 
+        m_waveTime = 1;
         m_bInWave = true;
     }
 
