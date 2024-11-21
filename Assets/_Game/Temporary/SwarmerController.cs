@@ -385,7 +385,12 @@ public class SwarmerController : MonoBehaviour
             Vector2 toTarget = m_target.GetPosition().xz() - transform.position.xz();
             float dist = toTarget.magnitude;
             // check if we are going in for an attack
-            if (dist <= m_manager.AttackDistance * 1.5f)
+            if (m_target is HQ)
+            {
+                // If the target is HQ, move directly toward it at max speed
+                desiredV = (toTarget / dist) * m_manager.MaxSpeed;
+            }
+            else if (dist <= m_manager.AttackDistance * 1.5f)
             {
                 m_bAttacking = m_bFacingTarget;
                 // TRIAL 1

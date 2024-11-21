@@ -112,6 +112,10 @@ public class SwarmerManager : MonoBehaviour
 
             if (Vector3.SqrMagnitude(SwarmerTarget.Instance.transform.position - swarmer.transform.position) < targetDestroyDistance * targetDestroyDistance)
             {
+                if (SwarmerTarget.Instance.TryGetComponent<HQ>(out var hq))
+                {
+                    hq.TakeCollisionDamage(AttackDamage); // Use AttackDamage for collision damage
+                }
                 swarmersToRemove.Add(swarmer);
             }
         }
