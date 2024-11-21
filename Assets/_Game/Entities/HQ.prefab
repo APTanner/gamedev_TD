@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5076296772623969239}
   - component: {fileID: -169908826129843350}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HQ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 2, y: 2}
+  health: 1000
+  price: 0
+  isSellable: 1
 --- !u!1 &8394515638919872358
 GameObject:
   m_ObjectHideFlags: 0
