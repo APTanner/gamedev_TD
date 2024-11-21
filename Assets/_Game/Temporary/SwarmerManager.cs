@@ -115,7 +115,6 @@ public class SwarmerManager : MonoBehaviour
             {
                 if (SwarmerTarget.Instance.GetComponentInParent<HQ>() is HQ hq)
                 {
-                    Debug.Log("Dealing damage to HQ");
                     hq.TakeCollisionDamage(CollisionDamage);
                 }
                 swarmersToRemove.Add(swarmer);
