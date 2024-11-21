@@ -4,6 +4,10 @@ using UnityEngine;
 public class SwarmerController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 5f;
+
+    [SerializeField]
+    private GameObject vfxPrefab;
+
     private float currentHealth;
 
     public bool ShowDesiredHeading = false;
@@ -425,6 +429,21 @@ public class SwarmerController : MonoBehaviour
 
     protected void OnDestroy()
     {
-        m_manager.Deregister(this); // Deregister when the swarmer is destroyed
+        m_manager.Deregister(this); 
+
+        if (vfxPrefab != null)
+        {
+            GameObject vfxInstance = Instantiate(vfxPrefab, transform.position, Quaternion.identity);
+
+            ParticleSystem particleSystem = vfxInstance.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                Destroy(vfxInstance, particleSystem.main.duration);
+            }
+            else
+            {
+                Destroy(vfxInstance, 8.0f);
+            }
+        }
     }
 }

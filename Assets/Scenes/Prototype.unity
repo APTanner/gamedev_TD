@@ -575,7 +575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de3a899c613aaf5458905eb2d2823940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: {fileID: 2850086659648504283, guid: e0dcfb9307a757b43a7160fa08a61be1,
+  enemyType: {fileID: 5927281788553058665, guid: 73d2e09b6796b6f4c93893e641e61c62,
     type: 3}
   enemyNum: 50
   waveNum: 1
@@ -4979,7 +4979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de3a899c613aaf5458905eb2d2823940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: {fileID: 2850086659648504283, guid: e0dcfb9307a757b43a7160fa08a61be1,
+  enemyType: {fileID: 5927281788553058665, guid: 73d2e09b6796b6f4c93893e641e61c62,
     type: 3}
   enemyNum: 50
   waveNum: 1
@@ -7071,7 +7071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de3a899c613aaf5458905eb2d2823940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: {fileID: 2850086659648504283, guid: e0dcfb9307a757b43a7160fa08a61be1,
+  enemyType: {fileID: 5927281788553058665, guid: 73d2e09b6796b6f4c93893e641e61c62,
     type: 3}
   enemyNum: 50
   waveNum: 1
@@ -7545,7 +7545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de3a899c613aaf5458905eb2d2823940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: {fileID: 2850086659648504283, guid: e0dcfb9307a757b43a7160fa08a61be1,
+  enemyType: {fileID: 5927281788553058665, guid: 73d2e09b6796b6f4c93893e641e61c62,
     type: 3}
   enemyNum: 50
   waveNum: 1

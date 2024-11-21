@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
             EnemySpawner spawner = obj.GetComponent<EnemySpawner>();
             if (spawner != null)
             {
+                Debug.Log("Current Wave: " + currentWave);
                 spawner.SpawnSwarmers(currentWave);
             }
         }
