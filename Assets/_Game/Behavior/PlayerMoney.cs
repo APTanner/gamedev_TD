@@ -4,9 +4,9 @@ using UnityEngine;
 public class PlayerMoney : MonoBehaviour
 {
     public static PlayerMoney Instance { get; private set; }
-    public int Money { get; private set; } = 500; 
+    public int Money { get; private set; }
 
-    [SerializeField] private TMP_Text moneyText; 
+    [SerializeField] private TMP_Text moneyText;
 
     private void Awake()
     {
@@ -18,11 +18,6 @@ public class PlayerMoney : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    private void Start()
-    {
-        UpdateMoneyUI(); 
     }
 
     public void AddMoney(int amount)

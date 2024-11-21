@@ -40,6 +40,8 @@ public class SwarmerManager : MonoBehaviour
     private Dictionary<Vector2Int, Vector2> m_averageHeading = new();
     private Dictionary<Vector2Int, List<SwarmerController>> m_enemiesByCell = new();
 
+    public int SwarmerCount => m_swarmers.Count;
+
     protected void Awake()
     {
         Instance = this;
@@ -223,6 +225,15 @@ public class SwarmerManager : MonoBehaviour
             return m_enemiesByCell[coord];
         }
         return s_emptyCell; // Return an empty list if no enemies are in the cell
+    }
+
+    public void Reset()
+    {
+        foreach (var swarmer in m_swarmers)
+        {
+            Destroy(swarmer);
+            Deregister(swarmer);
+        }
     }
 
     public void Deregister(SwarmerController swarmer)

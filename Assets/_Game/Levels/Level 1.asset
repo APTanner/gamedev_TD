@@ -154,10 +154,11 @@ MonoBehaviour:
     Position: {x: 0, y: 0, z: 100}
     Rotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   - EnemyCount: 50
-    WaveNum: 1
+    WaveNum: 2
     Position: {x: 100, y: 0, z: 200}
     Rotation: {x: 0, y: 1, z: 0, w: 0}
   - EnemyCount: 50
-    WaveNum: 1
+    WaveNum: 2
     Position: {x: 100, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Money: f401000064000000

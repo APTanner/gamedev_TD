@@ -187,6 +187,7 @@ public class SwarmerController : MonoBehaviour
         }
         Vector2 targetPos = m_target == null ? SwarmerTarget.Instance.transform.position.xz() : m_target.GetPosition().xz();
         Vector2 toTarget = (targetPos - transform.position.xz()).normalized;
+
         float cross = MathFunctions.Cross(forward.xz(), toTarget);
         int favoredRotation = -(int)Mathf.Sign(cross);
         int avoidanceRotation = 0;
@@ -391,7 +392,11 @@ public class SwarmerController : MonoBehaviour
         m_bAttacking = false; // reset
         Vector2 currentV = m_rb.linearVelocity.xz();
 
-        Vector2 desiredV = transform.forward.xz() * m_manager.MaxSpeed;
+        Vector2 targetPos = m_target == null ? SwarmerTarget.Instance.transform.position.xz() : m_target.GetPosition().xz();
+        float distToTarget = (targetPos - transform.position.xz()).magnitude;
+
+        float speed = Mathf.Lerp(1, m_manager.MaxSpeed, Mathf.Clamp01(distToTarget / 5));
+        Vector2 desiredV = transform.forward.xz() * speed;
 
         // Check if we have a valid target
         if (m_target != null)
@@ -448,7 +453,7 @@ public class SwarmerController : MonoBehaviour
 
     protected void OnDestroy()
     {
-        m_manager.Deregister(this); 
+        m_manager.Deregister(this);
 
 
     }

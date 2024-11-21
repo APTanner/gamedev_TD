@@ -30,6 +30,8 @@ public class LevelCreator : MonoBehaviour
         GetSpawnerData(ref ld);
         bSuccess &= GetHQPosition(ref ld); //make sure we don't short circuit
 
+        ld.Money = new int[] { 0 };
+
         if (!bSuccess)
         {
             Debug.LogError("There was some problem with the level. Not writing it.");

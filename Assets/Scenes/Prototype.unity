@@ -7332,7 +7332,7 @@ Transform:
   m_GameObject: {fileID: 1913279435}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1392.3, y: 297.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7755,6 +7755,8 @@ GameObject:
   - component: {fileID: 2094782933}
   - component: {fileID: 2094782935}
   - component: {fileID: 2094782934}
+  - component: {fileID: 2094782937}
+  - component: {fileID: 2094782936}
   m_Layer: 5
   m_Name: WaveStartButtonPanel
   m_TagString: Untagged
@@ -7820,6 +7822,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2094782932}
   m_CullTransparentMesh: 1
+--- !u!114 &2094782936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094782932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9078b5aba5d15e24b8a00b523907c145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!225 &2094782937
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094782932}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2097884752
 GameObject:
   m_ObjectHideFlags: 0

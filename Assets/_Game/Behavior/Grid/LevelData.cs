@@ -7,6 +7,7 @@ public class LevelData : ScriptableObject
     public Vector2Int[] Obstacles;
     public Vector2Int HQCoordinates;
     public SpawnerData[] Spawners;
+    public int[] Money;
 }
 
 [Serializable]
