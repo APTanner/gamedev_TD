@@ -6920,6 +6920,7 @@ MonoBehaviour:
   targetDestroyDistance: 4
   AttackDistance: 10
   AttackDamage: 1
+  CollisionDamage: 10
   CellSize: 10
   DrawDistance: 1
   Draw: 0
@@ -7836,7 +7837,7 @@ GameObject:
   - component: {fileID: 83138476416018912}
   - component: {fileID: 1087634571492698919}
   - component: {fileID: 8168960271470105779}
-  - component: {fileID: 5451032157087419827}
+  - component: {fileID: 8168960271470105781}
   - component: {fileID: 8168960271470105780}
   m_Layer: 0
   m_Name: HQ
@@ -7845,22 +7846,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &5451032157087419827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418382784276700942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6fbeff0f7441a441a92eea25e95e5fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  size: {x: 2, y: 2}
-  health: 1000
-  price: 0
-  isSellable: 0
 --- !u!23 &8168960271470105779
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7918,6 +7903,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 894cf05fc09db9644a03716b5715dba0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8168960271470105781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1418382784276700942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bba12c59b23f8f941a3f9a5b1349dd94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 2, y: 2}
+  health: 1000
+  price: 0
+  isSellable: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

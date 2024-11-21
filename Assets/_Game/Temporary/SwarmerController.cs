@@ -85,6 +85,20 @@ public class SwarmerController : MonoBehaviour
     {
         // Perform any destruction logic, like playing an animation or sound
         //Debug.Log($"{gameObject.name} has been destroyed.");
+        if (vfxPrefab != null)
+        {
+            GameObject vfxInstance = Instantiate(vfxPrefab, transform.position, Quaternion.identity);
+
+            ParticleSystem particleSystem = vfxInstance.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                Destroy(vfxInstance, particleSystem.main.duration);
+            }
+            else
+            {
+                Destroy(vfxInstance, 8.0f);
+            }
+        }
         Destroy(gameObject); // Destroy the swarmer
     }
 
@@ -436,19 +450,6 @@ public class SwarmerController : MonoBehaviour
     {
         m_manager.Deregister(this); 
 
-        if (vfxPrefab != null)
-        {
-            GameObject vfxInstance = Instantiate(vfxPrefab, transform.position, Quaternion.identity);
 
-            ParticleSystem particleSystem = vfxInstance.GetComponent<ParticleSystem>();
-            if (particleSystem != null)
-            {
-                Destroy(vfxInstance, particleSystem.main.duration);
-            }
-            else
-            {
-                Destroy(vfxInstance, 8.0f);
-            }
-        }
     }
 }

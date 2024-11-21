@@ -26,6 +26,7 @@ public class SwarmerManager : MonoBehaviour
     [Header("Attacking")]
     public float AttackDistance;
     public int AttackDamage;
+    public int CollisionDamage;
 
     [Header("Grid Cells")]
     public float CellSize;
@@ -114,7 +115,7 @@ public class SwarmerManager : MonoBehaviour
             {
                 if (SwarmerTarget.Instance.TryGetComponent<HQ>(out var hq))
                 {
-                    hq.TakeCollisionDamage(AttackDamage); // Use AttackDamage for collision damage
+                    hq.TakeCollisionDamage(CollisionDamage); 
                 }
                 swarmersToRemove.Add(swarmer);
             }
