@@ -29,7 +29,6 @@ public class ArtyController : TurretController
         toAimPoint /= distanceToAimPoint;
 
         float horizontalVelocityProportion = distanceToAimPoint / (bulletSpeed * timeToImpact);
-        Debug.Log($"Time to impact: {timeToImpact}, Distance: {distanceToAimPoint}, Needed proportion: {horizontalVelocityProportion}");
         if (horizontalVelocityProportion > 1)
         {
             // This happens when the bullet lacks the rangle to get there in time
