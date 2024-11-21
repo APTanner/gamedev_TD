@@ -34,7 +34,9 @@ public interface IBuilding: IGridElement
     GameObject Prefab { get; }
     Vector2Int Size { get; }
     int Health { get; }
+    int Price { get; }
     bool IsDestroyed { get; }
+    bool IsSellable { get; }
     void TakeDamage(int damage);
     Vector3 GetPosition();
     bool CanPlaceAt(Vector2Int startCoords, GridManager grid);

@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
 {
+    
+
     public virtual GameObject Prefab => gameObject;
     [SerializeField] private Vector2Int size = new Vector2Int(2, 2);
     public virtual Vector2Int Size => size;
+    [SerializeField] private int health = 1000;
     public virtual int Health { get; protected set; } = 1000;
+    [SerializeField] private int price = 0;
+    public virtual int Price { get; protected set; } = 0;
     public bool IsDestroyed => Health <= 0;
+    [SerializeField] private bool isSellable = true;
+    public virtual bool IsSellable { get; protected set; } = true;
     public Vector2Int Coordinates { get; private set; }
 
     private Vector2Int m_coordinates;
@@ -14,7 +21,7 @@ public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
     private GridManager gridManager;
     private BuildingManager buildingManager;
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         buildingManager = BuildingManager.Instance;
         gridManager = GridManager.Instance;

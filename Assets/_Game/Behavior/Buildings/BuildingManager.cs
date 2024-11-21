@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class BuildingManager : MonoBehaviour
 {
+    private Dictionary<Renderer, Material> originalMaterials = new Dictionary<Renderer, Material>();
+
     public GraphicRaycaster uiRaycaster;
     public EventSystem eventSystem;
     public List<GameObject> uiElementsToBlock;
@@ -15,7 +17,11 @@ public class BuildingManager : MonoBehaviour
     private GameObject previewInstance;
     private IBuilding currentBuildable;
     private bool isPlacingObject = false;
+    private bool isSellingMode = false;
     private bool isDragging = false;
+
+    private IBuilding hoveredBuilding = null;
+    private Material originalMaterial = null;
 
     private Vector2Int dragStartCoords;
     private List<Vector2Int> dragCoords = new List<Vector2Int>();
@@ -32,6 +38,14 @@ public class BuildingManager : MonoBehaviour
 
     protected void Update()
     {
+        if (isSellingMode)
+        {
+            HandleSellingHover();
+            if (Input.GetMouseButtonDown(0)) // Left-click to sell
+            {
+                AttemptSellBuilding();
+            }
+        }
         if (!isPlacingObject || currentBuildable == null)
         {
             return;
@@ -79,6 +93,12 @@ public class BuildingManager : MonoBehaviour
             isDragging = false;
             ClearWallPreview();
         }
+    }
+
+    public void ToggleSellingMode()
+    {
+        isSellingMode = !isSellingMode;
+        ResetHoverEffects();
     }
 
     private void ShowStandardPreview(Vector2Int currentCoords, GridManager grid)
@@ -373,5 +393,82 @@ public class BuildingManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void HandleSellingHover()
+    {
+        Vector3 mousePosition = WorldMousePosition.Instance.Position;
+
+        if (mousePosition == Vector3.zero || IsPointerOverUIElement())
+        {
+            ResetHoverEffects();
+            return;
+        }
+
+        Vector2Int currentCoords = GridManager.Instance.GetCoordinates(mousePosition);
+        GridCell cell = GridManager.Instance.GetCell(currentCoords);
+        IBuilding building = cell.Element as IBuilding;
+
+        if (building != hoveredBuilding)
+        {
+            ResetHoverEffects();
+            if (building != null && building.IsSellable)
+            {
+                hoveredBuilding = building;
+                ApplyHoverMaterial(hoveredBuilding, invalidPlacementMaterial);
+            }
+        }
+    }
+
+    private void AttemptSellBuilding()
+    {
+        if (hoveredBuilding != null && hoveredBuilding.IsSellable)
+        {
+            int refundAmount = hoveredBuilding.Price / 2; // Example refund logic
+            PlayerMoney.Instance.AddMoney(refundAmount); // Adjust based on your resource system
+
+            hoveredBuilding.RemoveFromGrid(GridManager.Instance);
+            Destroy((hoveredBuilding as MonoBehaviour).gameObject);
+
+            Debug.Log($"Sold building for {refundAmount} gold.");
+        }
+        else
+        {
+            Debug.Log("No sellable building hovered.");
+        }
+
+        ResetHoverEffects();
+    }
+
+    private void ApplyHoverMaterial(IBuilding building, Material hoverMaterial)
+    {
+        if (building is MonoBehaviour component)
+        {
+            foreach (Renderer renderer in component.GetComponentsInChildren<Renderer>())
+            {
+                if (!originalMaterials.ContainsKey(renderer))
+                {
+                    originalMaterials[renderer] = renderer.material; // Store the original material
+                }
+                renderer.material = hoverMaterial; // Apply hover material
+            }
+        }
+    }
+
+    private void ResetHoverEffects()
+    {
+        if (hoveredBuilding != null && hoveredBuilding is MonoBehaviour component)
+        {
+            foreach (Renderer renderer in component.GetComponentsInChildren<Renderer>())
+            {
+                if (originalMaterials.TryGetValue(renderer, out Material originalMaterial))
+                {
+                    renderer.material = originalMaterial; // Restore original material
+                }
+            }
+        }
+
+        hoveredBuilding = null;
+        originalMaterials.Clear(); // Clear the dictionary to avoid stale data
     }
 }
