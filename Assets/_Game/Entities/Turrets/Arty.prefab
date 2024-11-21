@@ -926,7 +926,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2097569307206879810}
-  - component: {fileID: 1209013205768510786}
+  - component: {fileID: 7545203229815252877}
   - component: {fileID: 6186341345331533404}
   m_Layer: 8
   m_Name: Arty
@@ -952,7 +952,7 @@ Transform:
   - {fileID: 2113283603540177202}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1209013205768510786
+--- !u!114 &7545203229815252877
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -961,10 +961,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7587297580624283730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6fbeff0f7441a441a92eea25e95e5fb, type: 3}
+  m_Script: {fileID: 11500000, guid: d137c84ab2bb1334a85a08e7ba54450b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 2, y: 2}
+  health: 1000
+  price: 300
+  isSellable: 1
 --- !u!114 &6186341345331533404
 MonoBehaviour:
   m_ObjectHideFlags: 0

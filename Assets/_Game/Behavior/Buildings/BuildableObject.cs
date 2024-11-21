@@ -9,8 +9,12 @@ public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
     public virtual Vector2Int Size => size;
     [SerializeField] private int health = 1000;
     public virtual int Health { get; protected set; } = 1000;
-    [SerializeField] private int price = 0;
-    public virtual int Price { get; protected set; } = 0;
+    [SerializeField] private int price = 1000;
+    public virtual int Price
+    {
+        get => price; // Return the serialized field value
+        protected set => price = value; // Allow runtime overrides
+    }
     public bool IsDestroyed => Health <= 0;
     [SerializeField] private bool isSellable = true;
     public virtual bool IsSellable { get; protected set; } = true;

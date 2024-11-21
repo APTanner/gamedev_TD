@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 4830168334832530796, guid: 93f50a862f79b724b89f8ccb81c9484a,
+  buildingPrefab: {fileID: -389382309013055478, guid: 93f50a862f79b724b89f8ccb81c9484a,
     type: 3}
   isBuildingButton: 1
 --- !u!1 &17488745
@@ -2600,7 +2600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 7011781605363834137, guid: ff14438ead072d949b10349d8251c84c,
+  buildingPrefab: {fileID: -13462325295115030, guid: ff14438ead072d949b10349d8251c84c,
     type: 3}
   isBuildingButton: 1
 --- !u!1 &441394860
@@ -4465,7 +4465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 1209013205768510786, guid: da69a6f2c2d845c41b6872fda32cfc11,
+  buildingPrefab: {fileID: 7545203229815252877, guid: da69a6f2c2d845c41b6872fda32cfc11,
     type: 3}
   isBuildingButton: 1
 --- !u!1 &874086443
@@ -5621,7 +5621,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68abad4b18aad604ea1a9184d43a12de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelData: {fileID: 0}
+  LevelData: {fileID: 11400000, guid: 8e2817cfb6a1cb2439d6cd287eebb6ef, type: 2}
+  waveText: {fileID: 209246671}
 --- !u!4 &1240856668
 Transform:
   m_ObjectHideFlags: 0
@@ -6250,7 +6251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 2267166409237826672, guid: a87c7b3981d591f459f659b2445f55dd,
+  buildingPrefab: {fileID: -5898886940340906507, guid: a87c7b3981d591f459f659b2445f55dd,
     type: 3}
   isBuildingButton: 1
 --- !u!1 &1563733439
@@ -6371,7 +6372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 010f293dcf914b0429817807b3dab6c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelData: {fileID: 0}
+  LevelData: {fileID: 11400000, guid: 8e2817cfb6a1cb2439d6cd287eebb6ef, type: 2}
 --- !u!4 &1605727426
 Transform:
   m_ObjectHideFlags: 0
@@ -7016,6 +7017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddd982119d4f3044cb6e7d61db0a8c21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moneyText: {fileID: 2030656649}
 --- !u!4 &1765036698
 Transform:
   m_ObjectHideFlags: 0

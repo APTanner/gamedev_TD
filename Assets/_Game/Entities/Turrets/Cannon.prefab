@@ -964,7 +964,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6029333500288999902}
-  - component: {fileID: 4830168334832530796}
+  - component: {fileID: -389382309013055478}
   - component: {fileID: 4686393034533402730}
   m_Layer: 8
   m_Name: Cannon
@@ -990,7 +990,7 @@ Transform:
   - {fileID: 5098210978061080535}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4830168334832530796
+--- !u!114 &-389382309013055478
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -999,10 +999,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8120675882069620301}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6fbeff0f7441a441a92eea25e95e5fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 0bf5fdb8f6944894685a5cff7461dbde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 2, y: 2}
+  health: 1000
+  price: 200
+  isSellable: 1
 --- !u!114 &4686393034533402730
 MonoBehaviour:
   m_ObjectHideFlags: 0

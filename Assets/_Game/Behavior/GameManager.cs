@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -10,6 +11,8 @@ public class GameManager : MonoBehaviour
     private bool m_bInWave = false;
 
     private List<EnemySpawner>[] m_spawners = new List<EnemySpawner>[0];
+
+    [SerializeField] private TMP_Text waveText; 
 
     public void Start()
     {
@@ -90,5 +93,17 @@ public class GameManager : MonoBehaviour
         }
         m_bInWave = false;
         ++m_currentWave;
+    }
+
+    private void UpdateWaveUI()
+    {
+        if (waveText != null)
+        {
+            waveText.text = $"{m_currentWave}";
+        }
+        else
+        {
+            Debug.LogWarning("Wave UI text not assigned in inspector.");
+        }
     }
 }

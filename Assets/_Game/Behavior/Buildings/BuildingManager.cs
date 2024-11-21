@@ -38,6 +38,7 @@ public class BuildingManager : MonoBehaviour
 
     protected void Update()
     {
+        //Debug.Log(PlayerMoney.Instance.Money);
         if (isSellingMode)
         {
             HandleSellingHover();
@@ -166,11 +167,14 @@ public class BuildingManager : MonoBehaviour
         );
 
         Vector3 gridPos = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
-        bool canPlace = currentBuildable.CanPlaceAt(placementStartCoords, grid);
+        bool canPlace = currentBuildable.CanPlaceAt(placementStartCoords, grid)
+                    && PlayerMoney.Instance.Money >= currentBuildable.Price;
         UpdatePreviewPosition(gridPos, canPlace);
 
         if (Input.GetMouseButtonDown(0) && canPlace)
         {
+            //Debug.Log("SubtractingMoney: " + currentBuildable.Price);
+            PlayerMoney.Instance.SubtractMoney(currentBuildable.Price);
             PlaceObject(currentCoords, grid);
         }
     }
@@ -239,7 +243,7 @@ public class BuildingManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError("currentBuildable.Prefab is null. Please assign a prefab to the buildable object.");
+                //Debug.LogError("currentBuildable.Prefab is null. Please assign a prefab to the buildable object.");
             }
         }
     }
@@ -276,6 +280,7 @@ public class BuildingManager : MonoBehaviour
 
     public void SetBuildableObject(IBuilding buildablePrefab)
     {
+        //Debug.Log($"[BuildingManager] Setting buildable object: {buildablePrefab?.Prefab.name}, Price: {buildablePrefab?.Price}");
         if (isPlacingObject)
         {
             StopPlacingObject();
@@ -369,8 +374,11 @@ public class BuildingManager : MonoBehaviour
     {
         if (previewInstance != null)
         {
+            bool hasEnoughMoney = PlayerMoney.Instance.Money >= currentBuildable.Price;
+            bool isValidPlacement = canPlace && hasEnoughMoney;
+
             previewInstance.transform.position = position;
-            SetPreviewMaterial(previewInstance, canPlace ? validPlacementMaterial : invalidPlacementMaterial);
+            SetPreviewMaterial(previewInstance, isValidPlacement ? validPlacementMaterial : invalidPlacementMaterial);
         }
     }
 
@@ -430,11 +438,11 @@ public class BuildingManager : MonoBehaviour
             hoveredBuilding.RemoveFromGrid(GridManager.Instance);
             Destroy((hoveredBuilding as MonoBehaviour).gameObject);
 
-            Debug.Log($"Sold building for {refundAmount} gold.");
+            //Debug.Log($"Sold building for {refundAmount} gold.");
         }
         else
         {
-            Debug.Log("No sellable building hovered.");
+            //Debug.Log("No sellable building hovered.");
         }
 
         ResetHoverEffects();
