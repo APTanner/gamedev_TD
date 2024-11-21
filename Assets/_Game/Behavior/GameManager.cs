@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
             spawner.SpawnSwarmers();
         }
 
-        m_waveTime = 1;
+        m_waveTime = 20;
         m_bInWave = true;
     }
 

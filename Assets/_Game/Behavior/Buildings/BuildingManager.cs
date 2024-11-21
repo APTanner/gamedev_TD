@@ -20,6 +20,8 @@ public class BuildingManager : MonoBehaviour
     private bool isSellingMode = false;
     private bool isDragging = false;
 
+    private bool m_bNoPlacing = false;
+
     private IBuilding hoveredBuilding = null;
     private Material originalMaterial = null;
 
@@ -35,9 +37,34 @@ public class BuildingManager : MonoBehaviour
     {
         Instance = this;
     }
+    private void OnEnable()
+    {
+        GameManager.OnWaveStart += GameManager_OnWaveStart;
+        GameManager.OnWaveEnd += GameManager_OnWaveEnd;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnWaveStart -= GameManager_OnWaveStart;
+        GameManager.OnWaveEnd -= GameManager_OnWaveEnd;
+    }
+    private void GameManager_OnWaveStart(int obj)
+    {
+        m_bNoPlacing = true;
+    }
+
+    private void GameManager_OnWaveEnd(int obj)
+    {
+        m_bNoPlacing = false;
+    }
 
     protected void Update()
     {
+        if (m_bNoPlacing)
+        {
+            return;
+        }
+
         //Debug.Log(PlayerMoney.Instance.Money);
         if (isSellingMode)
         {
