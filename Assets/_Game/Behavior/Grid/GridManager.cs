@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,24 +6,56 @@ public class GridManager : MonoBehaviour
     private static GridManager m_instance;
     public static GridManager Instance => m_instance;
 
-    private GridCell[] m_cells;
-    private Vector2Int m_size = new Vector2Int(100, 100);
+    public Vector2Int Size;
 
-    public int Width => m_size.x;
-    public int Height => m_size.y;
+    private GridCell[] m_cells;
+
+    public int Width => Size.x;
+    public int Height => Size.y;
 
     protected void Awake()
     {
         m_instance = this;
-        m_cells = new GridCell[Width * Height];
-        for (int y = 0; y < m_size.y; ++y)
+    }
+
+    public void InitializeLevelGridData(LevelData levelData)
+    {
+        Size = levelData.Size;
+        CreateCells();
+
+        BuildingManager bm = BuildingManager.Instance;
+        bm.StartPlacingObject(PrefabManager.Instance.ObstaclePrefab);
+
+        foreach (Vector2Int coord in levelData.Obstacles)
         {
-            int yOffset = y * m_size.x;
-            for (int x = 0; x < m_size.x; ++x)
+            bm.PlaceObject(coord, this);
+        }
+
+        bm.StopPlacingObject();
+
+        bm.StartPlacingObject(PrefabManager.Instance.HQPrefab);
+        bm.PlaceObject(levelData.HQCoordinates, this);
+
+        bm.StopPlacingObject();
+    }
+
+    private void CreateCells()
+    {
+        m_cells = new GridCell[Width * Height];
+
+        for (int y = 0; y < Size.y; ++y)
+        {
+            int yOffset = y * Size.x;
+            for (int x = 0; x < Size.x; ++x)
             {
                 m_cells[yOffset + x] = new GridCell(x, y);
             }
         }
+    }
+
+    public void InitializeEmptyLevel()
+    {
+        CreateCells();
     }
 
     protected void Start()
@@ -35,7 +65,7 @@ public class GridManager : MonoBehaviour
 
     public ref GridCell GetCell(Vector2Int coordinates)
     {
-        return ref m_cells[coordinates.y * m_size.x + coordinates.x];
+        return ref m_cells[coordinates.y * Size.x + coordinates.x];
     }
 
     public Vector2Int GetCoordinates(Vector3 position)
@@ -53,7 +83,7 @@ public class GridManager : MonoBehaviour
         return new Vector3(
             coordinates.x * size + size / 2,
             0,
-            coordinates.y * size +size / 2
+            coordinates.y * size + size / 2
         );
     }
 
@@ -62,15 +92,29 @@ public class GridManager : MonoBehaviour
         return
             coordinates.x >= 0 &&
             coordinates.y >= 0 &&
-            coordinates.x < m_size.x &&
-            coordinates.y < m_size.y;
+            coordinates.x < Size.x &&
+            coordinates.y < Size.y;
     }
-}
 
-public class GridData : ScriptableObject
-{
-    private Vector2Int m_size;
-    private GridCell[] m_cells;
+    public void PopulateGridData(ref LevelData gd)
+    {
+        List<Vector2Int> obstacleCoords = new();
+        for (int x = 0; x < Size.x; ++x)
+        {
+            for (int y = 0; y < Size.y; ++y)
+            {
+                Vector2Int coord = new Vector2Int(x, y);
+                if (GetCell(coord).Element is MonoBehaviour mb &&
+                    mb.gameObject.layer == Defines.EnvironmentLayer)
+                {
+                    obstacleCoords.Add(coord);
+                }
+            }
+        }
+
+        gd.Size = Size;
+        gd.Obstacles = obstacleCoords.ToArray();
+    }
 }
 
 public struct GridCell

@@ -255,7 +255,7 @@ public class BuildingManager : MonoBehaviour
         previewWallInstances.Clear();
     }
 
-    private void PlaceObject(Vector2Int startCoords, GridManager grid)
+    public void PlaceObject(Vector2Int startCoords, GridManager grid)
     {
         Vector2Int adjustedStartCoords = new Vector2Int(
             startCoords.x + (currentBuildable.Size.x - 1),
