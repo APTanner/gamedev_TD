@@ -3449,6 +3449,8 @@ GameObject:
   - component: {fileID: 673327623}
   - component: {fileID: 673327625}
   - component: {fileID: 673327624}
+  - component: {fileID: 673327627}
+  - component: {fileID: 673327626}
   m_Layer: 5
   m_Name: PurchasingPanel
   m_TagString: Untagged
@@ -3515,6 +3517,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 673327622}
   m_CullTransparentMesh: 1
+--- !u!114 &673327626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673327622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183ae1e69dd910a4687de1683d690539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!225 &673327627
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673327622}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &689187095
 GameObject:
   m_ObjectHideFlags: 0
@@ -6930,7 +6956,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 74117f645ca87544896e430b75e9a316, type: 2}
+  - {fileID: 2100000, guid: 8521b32b7fcd7ae41acc48012ada9ec0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
