@@ -46,6 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e087e7f21ad514444bfe30182e0de1cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: {x: 2, y: 2}
+  health: 1000
+  price: 1000
+  isSellable: 1
 --- !u!114 &-7844652027052065090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,6 +63,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 1, y: 1}
+  health: 1000
+  price: 1000
+  isSellable: 1
 --- !u!1 &8577390941996650494
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +131,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4084a843b9ef6af45a63b7163f9fbefb, type: 2}
+  - {fileID: 2100000, guid: 9f74a13152dad544abedc7538eb3182c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
