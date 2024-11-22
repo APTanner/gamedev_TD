@@ -296,4 +296,4 @@ MonoBehaviour:
     WaveNum: 1
     Position: {x: 200, y: 0, z: 100}
     Rotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  Money: 00000000
+  Money: f4010000c8000000c8000000

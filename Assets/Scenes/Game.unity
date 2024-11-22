@@ -5957,7 +5957,7 @@ MonoBehaviour:
     type: 3}
   EnemySpawnerPrefab: {fileID: 5721688203183946677, guid: b3e11a8c1afa4874baae88eb51dc7876,
     type: 3}
-  ObstaclePrefab: {fileID: -8100136952106309206, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
+  ObstaclePrefab: {fileID: 6189802888667152083, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
     type: 3}
   HQPrefab: {fileID: -169908826129843350, guid: a447606d6ccacd840a74187ded09ff81,
     type: 3}
@@ -7943,8 +7943,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Levels:
-  - {fileID: 11400000, guid: 8e2817cfb6a1cb2439d6cd287eebb6ef, type: 2}
   - {fileID: 11400000, guid: f1425a7b24a18c24c83b89a445bc81da, type: 2}
+  - {fileID: 11400000, guid: 8e2817cfb6a1cb2439d6cd287eebb6ef, type: 2}
+  - {fileID: 11400000, guid: 7a45cdeeaf9dfb546bad03816a5cc5bd, type: 2}
 --- !u!1 &1689323215
 GameObject:
   m_ObjectHideFlags: 0
