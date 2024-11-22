@@ -3,7 +3,8 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public float rotationSpeed = 100f; // Speed for keyboard rotation
-    public float verticalSpeed;
+    public float verticalSpeed = 100f;
+
     public Vector3 minBorder, maxBorder; // Bounds for camera movement
     public float zoomSpeed = 5f; // Speed for zooming
     public float normalSpeed = 5f;
@@ -12,10 +13,10 @@ public class CameraController : MonoBehaviour
     public float mouseMovementThreshold = 0.01f; // Threshold for detecting significant mouse movement
     public float maxPanDistance = 10f; // Maximum distance for a single pan update
 
-    public float arrowRotationSpeed = 0.1f;
+    public float arrowRotationSpeed = 100f;
 
-    public float horizontalSensitivity = 0.5f; // Sensitivity for horizontal mouse movement
-    public float verticalSensitivity = 0.5f; // Sensitivity for vertical mouse movement
+    public float horizontalSensitivity = 1f; // Sensitivity for horizontal mouse movement
+    public float verticalSensitivity = 1f; // Sensitivity for vertical mouse movement
 
     private float speed;
     private Vector3 startPos;
@@ -50,38 +51,61 @@ public class CameraController : MonoBehaviour
             float mouseX = Input.GetAxis("Mouse X") * horizontalSensitivity;
             float mouseY = Input.GetAxis("Mouse Y") * verticalSensitivity;
 
+            Debug.Log((mouseX * rotationSpeed * Time.deltaTime));
             // Rotate around the y-axis (horizontal rotation on main camera)
-            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + mouseX * rotationSpeed, 0f);
+            transform.rotation = Quaternion.Euler(0f, (mouseX * rotationSpeed * Time.deltaTime), 0f) * transform.rotation;
 
-            // Tilt up and down (vertical rotation only on child camera)
-            float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x - mouseY * verticalSpeed, 10f, 80f);
-            childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
+            //// Tilt up and down (vertical rotation only on child camera)
+            //float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x - (mouseY * verticalSpeed * Time.deltaTime), 10f, 80f);
+            //childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
+
+            childCam.localRotation = Quaternion.Euler(-mouseY * verticalSpeed * Time.deltaTime, 0f, 0f) * childCam.localRotation;
+            Vector3 rot = childCam.localRotation.eulerAngles;
+            if (rot.x > 180f)
+            {
+                rot.x -= 360f;
+            }
+
+            rot.x = Mathf.Clamp(rot.x, 10f, 80f);
+            childCam.localRotation = Quaternion.Euler(rot);
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow)) 
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
             // Rotate around the y-axis (horizontal rotation on main camera)
-            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y - arrowRotationSpeed, 0f);
+            transform.rotation = Quaternion.Euler(0f, -arrowRotationSpeed * Time.deltaTime, 0f) * transform.rotation;
         }
 
-        if (Input.GetKey(KeyCode.RightArrow)) 
+        if (Input.GetKey(KeyCode.RightArrow))
         {
             // Rotate around the y-axis (horizontal rotation on main camera)
-            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + arrowRotationSpeed, 0f);
+            transform.rotation = Quaternion.Euler(0f, arrowRotationSpeed * Time.deltaTime, 0f) * transform.rotation;
         }
 
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            // Tilt up and down (vertical rotation only on child camera)
-            float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x - arrowRotationSpeed, 10f, 80f);
-            childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
+            childCam.localRotation = Quaternion.Euler(-arrowRotationSpeed * Time.deltaTime, 0f, 0f) * childCam.localRotation;
+            Vector3 rot = childCam.localRotation.eulerAngles;
+            if (rot.x > 180f)
+            {
+                rot.x -= 360f;
+            }
+
+            rot.x = Mathf.Clamp(rot.x, 10f, 80f);
+            childCam.localRotation = Quaternion.Euler(rot);
         }
 
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            // Tilt up and down (vertical rotation only on child camera)
-            float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x + arrowRotationSpeed, 10f, 80f);
-            childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
+            childCam.localRotation = Quaternion.Euler(arrowRotationSpeed * Time.deltaTime, 0f, 0f) * childCam.localRotation;
+            Vector3 rot = childCam.localRotation.eulerAngles;
+            if (rot.x > 180f)
+            {
+                rot.x -= 360f;
+            }
+
+            rot.x = Mathf.Clamp(rot.x, 10f, 80f);
+            childCam.localRotation = Quaternion.Euler(rot);
         }
 
         // Rotate with Q and E keys
@@ -99,7 +123,7 @@ public class CameraController : MonoBehaviour
         if (scrollInput != 0)
         {
             Vector3 zoomDirection = childCam.forward * scrollInput * zoomSpeed;
-            pos += zoomDirection;
+            pos += zoomDirection * Time.deltaTime;
         }
 
         // Keyboard movement

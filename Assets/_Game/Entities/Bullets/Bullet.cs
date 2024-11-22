@@ -48,14 +48,29 @@ public class Bullet : MonoBehaviour
             Destroy(explosion.gameObject, explosion.GetFloat("Duration"));
         }
 
+
         if (collision.gameObject.TryGetComponent<SwarmerController>(out var enemy))
         {
             enemy.TakeDamage(damage);
             rb.linearVelocity = transform.forward * speed;
-            --penetration;
+        }
+        else
+        {
+            Vector3 collisionNormal = collision.contacts[0].normal;
+            float collisionAngle = Vector3.Angle(collisionNormal, transform.forward) - 90f;
+            if (collisionAngle <= Defines.RicochetAngle)
+            {
+                transform.forward = Vector3.Reflect(transform.forward, collisionNormal);
+            }
+            else
+            {
+                penetration = 0;
+            }
         }
 
-        if (penetration <= 0)
+        rb.linearVelocity = transform.forward * speed;
+
+        if (--penetration <= 0)
         {
             Destroy(gameObject);
         }
