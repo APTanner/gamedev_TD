@@ -29,17 +29,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    public void Start()
-    {
-        SetupLevel();
-    }
-
-    public void RestartLevel()
-    {
-        SetupLevel();
-    }
-
-    private void SetupLevel()
+    public void SetupLevel()
     {
         if (LevelData == null)
         {
@@ -58,7 +48,9 @@ public class GameManager : MonoBehaviour
         GridManager.Instance.InitializeLevelGridData(LevelData);
         InitializeSpawners();
 
-        PlayerMoney.Instance.AddMoney(LevelData.Money[0]);
+        PlayerMoney pm = PlayerMoney.Instance;
+        pm.ResetMoney();
+        pm.AddMoney(LevelData.Money[0]);
     }
 
     private void InitializeSpawners()

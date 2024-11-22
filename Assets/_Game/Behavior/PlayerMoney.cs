@@ -39,6 +39,11 @@ public class PlayerMoney : MonoBehaviour
         }
     }
 
+    public void ResetMoney()
+    {
+        Money = 0;
+    }
+
     private void UpdateMoneyUI()
     {
         if (moneyText != null)
