@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
 {
-    
-
     public virtual GameObject Prefab => gameObject;
     [SerializeField] private Vector2Int size = new Vector2Int(2, 2);
     public virtual Vector2Int Size => size;
@@ -29,7 +27,16 @@ public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
     {
         buildingManager = BuildingManager.Instance;
         gridManager = GridManager.Instance;
+        Debug.Log($"Awake called for this: {this.ToString()}");
         buildingManager.Register(this);
+    }
+
+    protected void OnDestroy()
+    {
+        if (Application.isPlaying)
+        {
+            buildingManager.Deregister(this);
+        }
     }
 
     public void SetCoordinates(Vector2Int coordinates)

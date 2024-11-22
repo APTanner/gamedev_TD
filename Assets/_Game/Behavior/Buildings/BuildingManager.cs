@@ -302,8 +302,6 @@ public class BuildingManager : MonoBehaviour
         Vector3 position = GetAlignedPosition(adjustedStartCoords, currentBuildable.Size, grid);
         IBuilding buildableInstance = Instantiate(currentBuildable.Prefab, position, Quaternion.identity).GetComponent<IBuilding>();
         buildableInstance.Place(placementStartCoords, grid);
-
-        Register(buildableInstance);
     }
 
     public void SetBuildableObject(IBuilding buildablePrefab)
@@ -349,6 +347,12 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
+    public void Deregister(IBuilding building)
+    {
+        m_buildings.Remove(building);
+        building.RemoveFromGrid(GridManager.Instance);
+    }
+
     public void CleanupBuildings()
     {
         List<IBuilding> destroyedBuildings = new List<IBuilding>();
@@ -362,8 +366,17 @@ public class BuildingManager : MonoBehaviour
 
         foreach (IBuilding building in destroyedBuildings)
         {
-            m_buildings.Remove(building);
-            building.RemoveFromGrid(GridManager.Instance);
+            Deregister(building);
+            Destroy((building as Component).gameObject);
+        }
+    }
+
+    public void ClearAllBuildings()
+    {
+        IBuilding[] buildingsArray = m_buildings.ToArray();
+        foreach (IBuilding building in buildingsArray)
+        {
+            Deregister(building);
             Destroy((building as Component).gameObject);
         }
     }

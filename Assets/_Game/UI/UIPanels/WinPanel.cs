@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class WinPanel : UIPanel
 {
     private void OnEnable()
@@ -20,7 +18,6 @@ public class WinPanel : UIPanel
 
     private void EventManager_OnWin()
     {
-        Debug.Log("OnWin called");
         EnablePanel();
     }
 }

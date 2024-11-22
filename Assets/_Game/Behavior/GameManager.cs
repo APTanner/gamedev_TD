@@ -41,10 +41,7 @@ public class GameManager : MonoBehaviour
         m_waveTime = 0;
         s_state = GameState.Building;
 
-        // TODO
-        Switchboard.LevelStart(-1);
-
-        GridManager.Instance.InitializeLevelGridData(LevelData);
+        BuildingManager.Instance.ClearAllBuildings();
         GridManager.Instance.InitializeLevelGridData(LevelData);
         InitializeSpawners();
 
@@ -96,7 +93,6 @@ public class GameManager : MonoBehaviour
         if (Switchboard.HQHealth <= 0)
         {
             Switchboard.Lose();
-            m_currentWave = -1;
             s_state = GameState.LevelOver;
             EndWave();
         }

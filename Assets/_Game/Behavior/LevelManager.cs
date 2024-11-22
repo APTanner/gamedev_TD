@@ -12,11 +12,14 @@ public class LevelManager : MonoBehaviour
         GameManager gm = GameManager.Instance;
         gm.LevelData = Levels[0];
         gm.SetupLevel();
+
+        Switchboard.LevelStart(m_levelIndex);
     }
 
     public void RestartLevel()
     {
         GameManager.Instance.SetupLevel();
+        Switchboard.LevelStart(m_levelIndex);
     }
 
     public void NextLevel()
@@ -30,6 +33,8 @@ public class LevelManager : MonoBehaviour
         GameManager gm = GameManager.Instance;
         gm.LevelData = Levels[m_levelIndex];
         gm.SetupLevel();
+
+        Switchboard.LevelStart(m_levelIndex);
     }
 
     public void GoToMainMenu()

@@ -9,8 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5569707884484555846}
-  - component: {fileID: -8100136952106309206}
-  - component: {fileID: -7844652027052065090}
+  - component: {fileID: 6189802888667152083}
   m_Layer: 6
   m_Name: Obstacle
   m_TagString: Untagged
@@ -34,7 +33,7 @@ Transform:
   - {fileID: 2499438609311381800}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-8100136952106309206
+--- !u!114 &6189802888667152083
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,19 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e087e7f21ad514444bfe30182e0de1cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-7844652027052065090
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4960586709087120348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6fbeff0f7441a441a92eea25e95e5fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   size: {x: 1, y: 1}
+  health: 1000
+  price: 0
+  isSellable: 1
 --- !u!1 &8577390941996650494
 GameObject:
   m_ObjectHideFlags: 0

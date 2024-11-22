@@ -5,6 +5,7 @@ public class LosePanel : UIPanel
         Switchboard.OnLose += EventManager_OnLose;
         Switchboard.OnLevelStart += EventManager_OnLevelStart;
     }
+
     private void OnDisable()
     {
         Switchboard.OnLose -= EventManager_OnLose;
