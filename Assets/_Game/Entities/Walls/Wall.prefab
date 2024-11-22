@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 2, y: 2}
   health: 1000
-  price: 50
+  price: 10
   isSellable: 1
 --- !u!1001 &4001783147163736074
 PrefabInstance:

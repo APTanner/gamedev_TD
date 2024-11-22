@@ -156,14 +156,19 @@ public class BuildingManager : MonoBehaviour
     private void HandleWallDragging(Vector2Int currentCoords, GridManager grid)
     {
         dragCoords = GetLineCoordinates(dragStartCoords, currentCoords);
-        UpdateWallPreview(dragCoords, grid);
+
+        int totalCost = dragCoords.Count * currentBuildable.Price;
+        bool canAfford = PlayerMoney.Instance.Money >= totalCost;
+
+        UpdateWallPreview(dragCoords, grid, canAfford);
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (CanPlaceWallLine(dragCoords, grid))
+            if (canAfford && CanPlaceWallLine(dragCoords, grid))
             {
                 foreach (var coord in dragCoords)
                 {
+                    PlayerMoney.Instance.SubtractMoney(currentBuildable.Price); // Deduct money per wall
                     PlaceObject(coord, grid);
                 }
             }
@@ -242,7 +247,7 @@ public class BuildingManager : MonoBehaviour
         return coordinates;
     }
 
-    private void UpdateWallPreview(List<Vector2Int> coords, GridManager grid)
+    private void UpdateWallPreview(List<Vector2Int> coords, GridManager grid, bool canAfford)
     {
         ClearWallPreview();
 
@@ -259,7 +264,7 @@ public class BuildingManager : MonoBehaviour
         }
 
         // Use the appropriate material based on whether the entire line can be placed
-        Material previewMaterial = canPlaceEntireLine ? validPlacementMaterial : invalidPlacementMaterial;
+        Material previewMaterial = (canPlaceEntireLine && canAfford) ? validPlacementMaterial : invalidPlacementMaterial;
 
         foreach (var coord in coords)
         {
