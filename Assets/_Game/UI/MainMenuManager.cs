@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -33,8 +34,8 @@ public class MainMenuManager : MonoBehaviour
 
     public void StartGame()
     {
-        //TODO: switch scene
-        Debug.Log("Starting the game...");
+        SceneManager.LoadScene("Game");
+        //Debug.Log("Starting the game...");
     }
 
     private void ChangeMenu(MenuState state)
