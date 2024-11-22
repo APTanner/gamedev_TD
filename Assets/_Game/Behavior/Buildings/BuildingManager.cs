@@ -37,23 +37,24 @@ public class BuildingManager : MonoBehaviour
     {
         Instance = this;
     }
+
     private void OnEnable()
     {
-        GameManager.OnWaveStart += GameManager_OnWaveStart;
-        GameManager.OnWaveEnd += GameManager_OnWaveEnd;
+        Switchboard.OnWaveStart += EventManager_OnWaveStart;
+        Switchboard.OnWaveEnd += EventManager_OnWaveEnd;
     }
 
     private void OnDisable()
     {
-        GameManager.OnWaveStart -= GameManager_OnWaveStart;
-        GameManager.OnWaveEnd -= GameManager_OnWaveEnd;
+        Switchboard.OnWaveStart -= EventManager_OnWaveStart;
+        Switchboard.OnWaveEnd -= EventManager_OnWaveEnd;
     }
-    private void GameManager_OnWaveStart(int obj)
+    private void EventManager_OnWaveStart(int obj)
     {
         m_bNoPlacing = true;
     }
 
-    private void GameManager_OnWaveEnd(int obj)
+    private void EventManager_OnWaveEnd(int obj)
     {
         m_bNoPlacing = false;
     }

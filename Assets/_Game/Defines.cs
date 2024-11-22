@@ -11,4 +11,7 @@ public static class Defines
 
     // In degrees
     public const float TurretAimTolerance = 2;
+
+
+    public const int HQMaxHealth = 1000;
 }

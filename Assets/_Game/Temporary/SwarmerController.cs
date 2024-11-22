@@ -195,7 +195,12 @@ public class SwarmerController : MonoBehaviour
                 --m_attention;
             }
         }
-        Vector2 targetPos = m_target == null ? SwarmerTarget.Instance.transform.position.xz() : m_target.GetPosition().xz();
+
+        SwarmerTarget st = SwarmerTarget.Instance;
+        Vector2 targetPos =
+            m_target != null ? m_target.GetPosition().xz() :
+            st != null ? st.transform.position.xz() :
+            transform.position.xz();
         Vector2 toTarget = (targetPos - transform.position.xz()).normalized;
 
         float cross = MathFunctions.Cross(forward.xz(), toTarget);
@@ -402,7 +407,11 @@ public class SwarmerController : MonoBehaviour
         m_bAttacking = false; // reset
         Vector2 currentV = m_rb.linearVelocity.xz();
 
-        Vector2 targetPos = m_target == null ? SwarmerTarget.Instance.transform.position.xz() : m_target.GetPosition().xz();
+        SwarmerTarget st = SwarmerTarget.Instance;
+        Vector2 targetPos =
+            m_target != null ? m_target.GetPosition().xz() :
+            st != null ? st.transform.position.xz() :
+            transform.position.xz();
         float distToTarget = (targetPos - transform.position.xz()).magnitude;
 
         float speed = Mathf.Lerp(1, m_manager.MaxSpeed, Mathf.Clamp01(distToTarget / 5));

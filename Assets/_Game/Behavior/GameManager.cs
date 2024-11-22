@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -10,8 +9,11 @@ public class GameManager : MonoBehaviour
 
     public LevelData LevelData;
 
+    public static GameState State => s_state;
+
     private int m_currentWave = 1;
-    private bool m_bInWave = false;
+
+    private static GameState s_state = GameState.None;
 
     private float m_waveTime = 0;
 
@@ -22,12 +24,6 @@ public class GameManager : MonoBehaviour
     public int WaveCount => m_spawners.Length;
     public float TimeLeftInWave => m_waveTime;
 
-    // The index of the current Wave
-    public static event Action<int> OnWaveStart;
-
-    // The index of the next wave (or the last wave if there are no waves after this one)
-    public static event Action<int> OnWaveEnd;
-
     private void Awake()
     {
         Instance = this;
@@ -35,11 +31,28 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
+        SetupLevel();
+    }
+
+    public void RestartLevel()
+    {
+        SetupLevel();
+    }
+
+    private void SetupLevel()
+    {
         if (LevelData == null)
         {
             GridManager.Instance.InitializeEmptyLevel();
             return;
         }
+
+        m_currentWave = 1;
+        m_waveTime = 0;
+        s_state = GameState.Building;
+
+        // TODO
+        Switchboard.LevelStart(-1);
 
         GridManager.Instance.InitializeLevelGridData(LevelData);
         GridManager.Instance.InitializeLevelGridData(LevelData);
@@ -73,18 +86,28 @@ public class GameManager : MonoBehaviour
                 PrefabManager.Instance.EnemySpawnerPrefab,
                 spawner.Position,
                 spawner.Rotation);
+
             m_spawners[spawner.WaveNum-1].Add(spawnerGo);
+            spawnerGo.enemyNum = spawner.EnemyCount;
         }
     }
 
     protected void FixedUpdate()
     {
-        if (!m_bInWave)
+        if (s_state != GameState.InWave)
         {
             return;
         }
 
         m_waveTime -= Time.fixedDeltaTime;
+
+        if (Switchboard.HQHealth <= 0)
+        {
+            Switchboard.Lose();
+            m_currentWave = -1;
+            s_state = GameState.LevelOver;
+            EndWave();
+        }
 
         SwarmerManager sm = SwarmerManager.Instance;
         // if everything has been killed
@@ -96,7 +119,7 @@ public class GameManager : MonoBehaviour
 
     public void BeginWave()
     {
-        if (m_bInWave)
+        if (s_state == GameState.InWave)
         {
             Debug.LogError("Tried to start a wave while the previous wave was still ongoing");
         }
@@ -111,7 +134,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        OnWaveStart?.Invoke(m_currentWave);
+        Switchboard.WaveStart(m_currentWave);
 
         foreach (EnemySpawner spawner in m_spawners[m_currentWave-1])
         {
@@ -119,29 +142,33 @@ public class GameManager : MonoBehaviour
         }
 
         m_waveTime = 20;
-        m_bInWave = true;
+        s_state = GameState.InWave;
     }
 
     public void EndWave()
     {
-        if (!m_bInWave)
+        Switchboard.WaveEnd(m_currentWave+1);
+        SwarmerManager.Instance.Reset();
+
+        if (s_state != GameState.LevelOver && m_currentWave == WaveCount)
         {
-            Debug.LogError("We are ending a wave that hasn't started yet. Something has gone wrong");
+            Switchboard.Win();
+            s_state = GameState.LevelOver;
         }
 
-        if (m_currentWave <= WaveCount && LevelData.Money.Length > m_currentWave)
+        if (s_state == GameState.LevelOver)
+        {
+            return;
+        }
+
+        if (LevelData.Money.Length > m_currentWave)
         {
             PlayerMoney.Instance.AddMoney(LevelData.Money[m_currentWave]);
         }
 
         ++m_currentWave;
-
-        OnWaveEnd?.Invoke(m_currentWave);
-        SwarmerManager.Instance.Reset();
+        s_state = GameState.Building;
         UpdateWaveUI();
-
-
-        m_bInWave = false;
     }
 
     private void UpdateWaveUI()
@@ -155,4 +182,12 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Wave UI text not assigned in inspector.");
         }
     }
+}
+
+public enum GameState
+{
+    None,
+    Building,
+    InWave,
+    LevelOver
 }

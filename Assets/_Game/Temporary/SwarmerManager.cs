@@ -113,7 +113,9 @@ public class SwarmerManager : MonoBehaviour
                 swarmer.Target.TakeDamage(AttackDamage);
             }
 
-            if (Vector3.SqrMagnitude(SwarmerTarget.Instance.transform.position - swarmer.transform.position) < targetDestroyDistance * targetDestroyDistance)
+            if (SwarmerTarget.Instance != null &&
+                Vector3.SqrMagnitude(SwarmerTarget.Instance.transform.position - swarmer.transform.position)
+                < targetDestroyDistance * targetDestroyDistance)
             {
                 if (SwarmerTarget.Instance.GetComponentInParent<HQ>() is HQ hq)
                 {

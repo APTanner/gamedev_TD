@@ -2,24 +2,31 @@ public class StartWaveUIPanel : UIPanel
 {
     private void OnEnable()
     {
-        GameManager.OnWaveStart += GameManager_OnWaveStart;
-        GameManager.OnWaveEnd += GameManager_OnWaveEnd;
+        Switchboard.OnLevelStart += Switchboard_OnLevelStart;
+        Switchboard.OnWaveStart += EventManager_OnWaveStart;
+        Switchboard.OnWaveEnd += EventManager_OnWaveEnd;
     }
 
     private void OnDisable()
     {
-        GameManager.OnWaveStart -= GameManager_OnWaveStart;
-        GameManager.OnWaveEnd -= GameManager_OnWaveEnd;
+        Switchboard.OnLevelStart -= Switchboard_OnLevelStart;
+        Switchboard.OnWaveStart -= EventManager_OnWaveStart;
+        Switchboard.OnWaveEnd -= EventManager_OnWaveEnd;
     }
 
-    private void GameManager_OnWaveStart(int wave)
+    private void EventManager_OnWaveStart(int wave)
     {
         DisablePanel();
     }
 
-    private void GameManager_OnWaveEnd(int wave)
+    private void Switchboard_OnLevelStart(int obj)
     {
-        if (wave <= GameManager.Instance.WaveCount)
+        EnablePanel();
+    }
+
+    private void EventManager_OnWaveEnd(int wave)
+    {
+        if (GameManager.State != GameState.LevelOver)
         {
             EnablePanel();
         }

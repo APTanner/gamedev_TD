@@ -45,10 +45,6 @@ public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
     public void TakeDamage(int damage)
     {
         Health -= damage;
-        if (IsDestroyed)
-        {
-            DestroyBuilding();
-        }
     }
 
     public bool CanPlaceAt(Vector2Int startCoords, GridManager grid)
@@ -90,11 +86,5 @@ public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
                 grid.GetCell(cellCoords).ClearElement();
             }
         }
-    }
-
-    private void DestroyBuilding()
-    {
-        RemoveFromGrid(gridManager);
-        buildingManager.CleanupBuildings();
     }
 }

@@ -2,21 +2,21 @@ public class PurchasingUIPanel : UIPanel
 {
     private void OnEnable()
     {
-        GameManager.OnWaveStart += GameManager_OnWaveStart;
-        GameManager.OnWaveEnd += GameManager_OnWaveEnd;
+        Switchboard.OnWaveStart += EventManager_OnWaveStart;
+        Switchboard.OnWaveEnd += EventManager_OnWaveEnd;
     }
     private void OnDisable()
     {
-        GameManager.OnWaveStart -= GameManager_OnWaveStart;
-        GameManager.OnWaveEnd -= GameManager_OnWaveEnd;
+        Switchboard.OnWaveStart -= EventManager_OnWaveStart;
+        Switchboard.OnWaveEnd -= EventManager_OnWaveEnd;
     }
 
-    private void GameManager_OnWaveStart(int wave)
+    private void EventManager_OnWaveStart(int wave)
     {
         DisablePanel();
     }
 
-    private void GameManager_OnWaveEnd(int wave)
+    private void EventManager_OnWaveEnd(int wave)
     {
         EnablePanel();
     }
