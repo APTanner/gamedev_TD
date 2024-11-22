@@ -268,6 +268,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7313203456832222993}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 192cd8ea539e58944b41119bfa545d20,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2603011968076649253}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 192cd8ea539e58944b41119bfa545d20,
         type: 3}
@@ -301,7 +305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 5
-  vfxPrefab: {fileID: 1028717081472531816, guid: 3bd142956cdcac24080a7655053914a7,
+  DeathVfxPrefab: {fileID: 1028717081472531816, guid: 3bd142956cdcac24080a7655053914a7,
     type: 3}
   ShowDesiredHeading: 0
   separationWeight: 0
@@ -359,4 +363,78 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 192cd8ea539e58944b41119bfa545d20,
     type: 3}
   m_PrefabInstance: {fileID: 6809590727431283768}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8794308175866564454
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6416010770603606995}
+    m_Modifications:
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8481365115845957957, guid: eb586383690f6854fb15b1a5627aa7cc,
+        type: 3}
+      propertyPath: m_Name
+      value: SwarmerShootEffect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eb586383690f6854fb15b1a5627aa7cc, type: 3}
+--- !u!4 &2603011968076649253 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6779158954864516163, guid: eb586383690f6854fb15b1a5627aa7cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 8794308175866564454}
   m_PrefabAsset: {fileID: 0}

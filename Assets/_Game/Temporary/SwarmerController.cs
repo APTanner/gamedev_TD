@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.VFX;
 
 [RequireComponent(typeof(Rigidbody))]
 public class SwarmerController : MonoBehaviour
@@ -6,7 +7,10 @@ public class SwarmerController : MonoBehaviour
     [SerializeField] private float maxHealth = 5f;
 
     [SerializeField]
-    private GameObject vfxPrefab;
+    private GameObject DeathVfxPrefab;
+    //[SerializeField]
+    //private GameObject AttackVfxPrefab;
+    private VisualEffect attackVFX;
 
     private float currentHealth;
 
@@ -47,6 +51,12 @@ public class SwarmerController : MonoBehaviour
         m_manager = SwarmerManager.Instance;
 
         currentHealth = maxHealth;
+
+        attackVFX = GetComponentInChildren<VisualEffect>();
+        if (attackVFX != null)
+        {
+            attackVFX.Stop();
+        }
     }
 
     protected void Update()
@@ -85,9 +95,9 @@ public class SwarmerController : MonoBehaviour
     {
         // Perform any destruction logic, like playing an animation or sound
         //Debug.Log($"{gameObject.name} has been destroyed.");
-        if (vfxPrefab != null)
+        if (DeathVfxPrefab != null)
         {
-            GameObject vfxInstance = Instantiate(vfxPrefab, transform.position, Quaternion.identity);
+            GameObject vfxInstance = Instantiate(DeathVfxPrefab, transform.position, Quaternion.identity);
 
             ParticleSystem particleSystem = vfxInstance.GetComponent<ParticleSystem>();
             if (particleSystem != null)
@@ -412,6 +422,13 @@ public class SwarmerController : MonoBehaviour
             else if (dist <= m_manager.AttackDistance * 1.5f)
             {
                 m_bAttacking = m_bFacingTarget;
+                if (m_bAttacking)
+                {
+                    if (!(attackVFX.aliveParticleCount > 0)) // VisualEffect-specific check
+                    {
+                        attackVFX.Play(); // Start the VFX if it's not already playing
+                    }
+                }
                 // TRIAL 1
                 // 100 * (x^2 - d)^3 -> get desired velocity around the distance one wants to attack at
                 // graph in desmos to see
@@ -420,7 +437,16 @@ public class SwarmerController : MonoBehaviour
                 float value = Mathf.Clamp(0.5f * (dist - m_manager.AttackDistance), -1, 1);
                 //Debug.Log($"Current dist to target: {dist}. The current magnitude of acceleration: {value}");
                 desiredV = value * m_manager.MaxSpeed * (toTarget / dist);
-            }
+            
+                 }
+    else
+    {
+        if (attackVFX.aliveParticleCount > 0)
+        {
+            attackVFX.Stop(); // Stop the VFX when not attacking
+        }
+        m_bAttacking = false;
+    }
         }
 
         Vector2 dv = Vector2.ClampMagnitude(desiredV-currentV, m_manager.Acceleration);
