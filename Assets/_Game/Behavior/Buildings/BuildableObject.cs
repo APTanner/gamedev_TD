@@ -27,7 +27,6 @@ public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
     {
         buildingManager = BuildingManager.Instance;
         gridManager = GridManager.Instance;
-        Debug.Log($"Awake called for this: {this.ToString()}");
         buildingManager.Register(this);
     }
 

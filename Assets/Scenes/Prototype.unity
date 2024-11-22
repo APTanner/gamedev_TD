@@ -1109,7 +1109,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &167514064
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2679,7 +2679,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 48.4
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5328,6 +5328,7 @@ MonoBehaviour:
   eventSystem: {fileID: 453033883}
   uiElementsToBlock:
   - {fileID: 7266693}
+  - {fileID: 2094782932}
   validPlacementMaterial: {fileID: 2100000, guid: e0892b42b91046747b7125d860a616eb,
     type: 2}
   invalidPlacementMaterial: {fileID: 2100000, guid: e6edabb977fdefb44a6ce05fcf8e8729,
@@ -5997,7 +5998,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 48.4
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6243,7 +6244,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1049153333
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9824,7 +9825,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 48.4
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9922,6 +9923,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Levels:
   - {fileID: 11400000, guid: f1425a7b24a18c24c83b89a445bc81da, type: 2}
+  - {fileID: 11400000, guid: 7a45cdeeaf9dfb546bad03816a5cc5bd, type: 2}
 --- !u!1 &2122181801
 GameObject:
   m_ObjectHideFlags: 0

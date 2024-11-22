@@ -52,6 +52,8 @@ public class BuildingManager : MonoBehaviour
     private void EventManager_OnWaveStart(int obj)
     {
         m_bNoPlacing = true;
+        currentBuildable = null;
+        Destroy(previewInstance);
     }
 
     private void EventManager_OnWaveEnd(int obj)
