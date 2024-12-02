@@ -37,110 +37,32 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        CamMovement();
+        CameraRotate();
+        CameraMove();
     }
 
-    private void CamMovement()
+    private void CameraMove()
     {
-        // Use targetPos for all movement calculations
-        Vector3 pos = targetPos;
-
-        // Camera horizontal rotation with right mouse button
-        if (Input.GetMouseButton(1)) // Right mouse button held down
-        {
-            float mouseX = Input.GetAxis("Mouse X") * horizontalSensitivity;
-            float mouseY = Input.GetAxis("Mouse Y") * verticalSensitivity;
-
-            Debug.Log((mouseX * rotationSpeed * Time.deltaTime));
-            // Rotate around the y-axis (horizontal rotation on main camera)
-            transform.rotation = Quaternion.Euler(0f, (mouseX * rotationSpeed * Time.deltaTime), 0f) * transform.rotation;
-
-            //// Tilt up and down (vertical rotation only on child camera)
-            //float newTilt = Mathf.Clamp(childCam.localRotation.eulerAngles.x - (mouseY * verticalSpeed * Time.deltaTime), 10f, 80f);
-            //childCam.localRotation = Quaternion.Euler(newTilt, 0f, 0f);
-
-            childCam.localRotation = Quaternion.Euler(-mouseY * verticalSpeed * Time.deltaTime, 0f, 0f) * childCam.localRotation;
-            Vector3 rot = childCam.localRotation.eulerAngles;
-            if (rot.x > 180f)
-            {
-                rot.x -= 360f;
-            }
-
-            rot.x = Mathf.Clamp(rot.x, 10f, 80f);
-            childCam.localRotation = Quaternion.Euler(rot);
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            // Rotate around the y-axis (horizontal rotation on main camera)
-            transform.rotation = Quaternion.Euler(0f, -arrowRotationSpeed * Time.deltaTime, 0f) * transform.rotation;
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            // Rotate around the y-axis (horizontal rotation on main camera)
-            transform.rotation = Quaternion.Euler(0f, arrowRotationSpeed * Time.deltaTime, 0f) * transform.rotation;
-        }
-
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            childCam.localRotation = Quaternion.Euler(-arrowRotationSpeed * Time.deltaTime, 0f, 0f) * childCam.localRotation;
-            Vector3 rot = childCam.localRotation.eulerAngles;
-            if (rot.x > 180f)
-            {
-                rot.x -= 360f;
-            }
-
-            rot.x = Mathf.Clamp(rot.x, 10f, 80f);
-            childCam.localRotation = Quaternion.Euler(rot);
-        }
-
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            childCam.localRotation = Quaternion.Euler(arrowRotationSpeed * Time.deltaTime, 0f, 0f) * childCam.localRotation;
-            Vector3 rot = childCam.localRotation.eulerAngles;
-            if (rot.x > 180f)
-            {
-                rot.x -= 360f;
-            }
-
-            rot.x = Mathf.Clamp(rot.x, 10f, 80f);
-            childCam.localRotation = Quaternion.Euler(rot);
-        }
-
-        // Rotate with Q and E keys
-        if (Input.GetKey(KeyCode.Q))
-        {
-            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y - rotationSpeed * Time.deltaTime, 0f);
-        }
-        if (Input.GetKey(KeyCode.E))
-        {
-            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + rotationSpeed * Time.deltaTime, 0f);
-        }
-
-        // Simplified zoom functionality: move in the direction of childCam.forward
+        // The reason the scroll sensitivity is so high is that my mousewheel only registers scrolling
+        // for a few frames, which means it must travel very fast in those few frames. This may break on
+        // your machine so change it if that's the case
         float scrollInput = Input.GetAxisRaw("Mouse ScrollWheel");
+        Debug.Log(scrollInput);
         if (scrollInput != 0)
         {
-            Vector3 zoomDirection = childCam.forward * scrollInput * zoomSpeed;
-            pos += zoomDirection * Time.deltaTime;
+            Vector3 zoomDirection = scrollInput * zoomSpeed * childCam.forward;
+            Debug.Log(zoomDirection.magnitude);
+            targetPos += zoomDirection * Time.deltaTime;
         }
 
         // Keyboard movement
-        if (Input.GetKey(KeyCode.LeftShift)) pos += verticalSpeed * Time.deltaTime * transform.up;
-        if (Input.GetKey(KeyCode.LeftControl)) pos -= verticalSpeed * Time.deltaTime * transform.up;
-        if (Input.GetKey(KeyCode.W)) pos += speed * Time.deltaTime * transform.forward;
-        if (Input.GetKey(KeyCode.S)) pos -= speed * Time.deltaTime * transform.forward;
-        if (Input.GetKey(KeyCode.A)) pos -= speed * Time.deltaTime * transform.right;
-        if (Input.GetKey(KeyCode.D)) pos += speed * Time.deltaTime * transform.right;
+        if (Input.GetKey(KeyCode.LeftShift)) targetPos += verticalSpeed * Time.deltaTime * transform.up;
+        if (Input.GetKey(KeyCode.LeftControl)) targetPos -= verticalSpeed * Time.deltaTime * transform.up;
+        if (Input.GetKey(KeyCode.W)) targetPos += speed * Time.deltaTime * transform.forward;
+        if (Input.GetKey(KeyCode.S)) targetPos -= speed * Time.deltaTime * transform.forward;
+        if (Input.GetKey(KeyCode.A)) targetPos -= speed * Time.deltaTime * transform.right;
+        if (Input.GetKey(KeyCode.D)) targetPos += speed * Time.deltaTime * transform.right;
 
-        // Apply bounds to keep the camera within the designated area
-        pos.x = Mathf.Clamp(pos.x, minBorder.x, maxBorder.x);
-        pos.y = Mathf.Clamp(pos.y, minBorder.y, maxBorder.y);
-        pos.z = Mathf.Clamp(pos.z, minBorder.z, maxBorder.z);
-
-        // Update targetPos with the new position
-        targetPos = pos;
 
         // Movement with slide (middle mouse panning)
         if (Input.GetMouseButtonDown(2))
@@ -172,7 +94,62 @@ public class CameraController : MonoBehaviour
             }
         }
 
+        // Apply bounds to keep the camera within the designated area
+        targetPos.x = Mathf.Clamp(targetPos.x, minBorder.x, maxBorder.x);
+        targetPos.y = Mathf.Clamp(targetPos.y, minBorder.y, maxBorder.y);
+        targetPos.z = Mathf.Clamp(targetPos.z, minBorder.z, maxBorder.z);
+
         // Smoothly move the camera to the target position
         transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * panSmoothSpeed);
+    }
+
+    private void CameraRotate()
+    {
+        // Camera horizontal rotation with right mouse button
+        if (Input.GetMouseButton(1)) // Right mouse button held down
+        {
+            float mouseX = Input.GetAxis("Mouse X") * horizontalSensitivity;
+            float mouseY = Input.GetAxis("Mouse Y") * verticalSensitivity;
+            RotateX(mouseY * rotationSpeed);
+            RotateY(mouseX * rotationSpeed);
+        }
+
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            RotateX(arrowRotationSpeed);
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            RotateX(-arrowRotationSpeed);
+        }
+
+        // Rotate with Q and E keys
+        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            RotateY(-arrowRotationSpeed);
+        }
+        if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.RightArrow))
+        {
+            RotateY(arrowRotationSpeed);
+        }
+    }
+
+    private void RotateX(float angle)
+    {
+        childCam.localRotation = Quaternion.Euler(-angle * Time.deltaTime, 0f, 0f) * childCam.localRotation;
+        Vector3 rot = childCam.localRotation.eulerAngles;
+        if (rot.x > 180f)
+        {
+            rot.x -= 360f;
+        }
+
+        rot.x = Mathf.Clamp(rot.x, 10f, 80f);
+        childCam.localRotation = Quaternion.Euler(rot);
+    }
+
+    private void RotateY(float angle)
+    {
+        transform.rotation = Quaternion.Euler(0f, angle * Time.deltaTime, 0f) * transform.rotation;
     }
 }
