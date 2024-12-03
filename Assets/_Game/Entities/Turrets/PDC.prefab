@@ -503,7 +503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f18710e2810c1445b3dcfb20b0d0721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 50
+  detectionRange: 25
   closeDetectionRange: 10
   rotationSpeed: 360
   fireRate: 10

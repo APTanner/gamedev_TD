@@ -7,9 +7,9 @@ public class GatlingController : TurretController
 
     private bool isFiring = false;
 
-    protected override void Update()
+    protected override void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
 
         if (isFiring)
         {

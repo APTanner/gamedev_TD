@@ -8,11 +8,12 @@ public class TurretController : MonoBehaviour
     public float closeDetectionRange = 5f; // Range for sphere cast
     public float rotationSpeed = 5f;
     public float fireRate = 1f;
-    public LayerMask enemyLayer;
 
     public float minVerticalAimDistance = 5f;
 
     protected MonoBehaviour currentTarget;
+    private Vector3 m_targetFirePosition;
+
     private float fireCooldown = 0f;
 
     public Transform turretBase;
@@ -47,18 +48,19 @@ public class TurretController : MonoBehaviour
         }
     }
 
-    protected virtual void Update()
+    protected virtual void FixedUpdate()
     {
         if (IsPreview)
         {
             return;
         }
 
-        fireCooldown -= Time.deltaTime;
+        fireCooldown -= Time.fixedDeltaTime;
 
         if (!FindCloseTarget())
         {
-            FindGridTarget();
+            //FindGridTargetFromSelf();
+            FindGridTargetFromHQ();
         }
 
         if (currentTarget != null)
@@ -78,28 +80,25 @@ public class TurretController : MonoBehaviour
 
     private bool FindCloseTarget()
     {
-        Collider[] closeEnemies = Physics.OverlapSphere(transform.position, closeDetectionRange, enemyLayer);
+        Collider[] closeEnemies = Physics.OverlapSphere(transform.position, closeDetectionRange, 1 << Defines.SwarmerLayer);
         if (closeEnemies.Length > 0)
         {
-            Transform closestEnemy = closeEnemies[0].transform;
-            float closestDistance = Vector3.Distance(transform.position, closestEnemy.position);
+            Transform closest = null;
+            float closestDist = float.PositiveInfinity;
 
-            foreach (var enemy in closeEnemies)
+            foreach (Collider c in closeEnemies)
             {
-                float distance = Vector3.Distance(transform.position, enemy.transform.position);
-                if (distance < closestDistance)
+                Vector3 toTarget = c.transform.position - transform.position;
+                float dist = toTarget.magnitude;
+                toTarget /= dist;
+                if (dist < closestDist && !Physics.Raycast(transform.position, toTarget, dist, 1 << Defines.EnvironmentLayer))
                 {
-                    closestEnemy = enemy.transform;
-                    closestDistance = distance;
+                    closest = c.transform;
+                    closestDist = dist;
                 }
             }
 
-            if (closestEnemy.TryGetComponent<IBuilding>(out var building))
-            {
-                currentTarget = building as MonoBehaviour;
-                return true;
-            }
-            else if (closestEnemy.TryGetComponent<SwarmerController>(out var enemyController))
+            if (closest != null && closest.TryGetComponent<SwarmerController>(out var enemyController))
             {
                 currentTarget = enemyController;
                 return true;
@@ -111,7 +110,7 @@ public class TurretController : MonoBehaviour
     }
 
     private static readonly int[] signs = { -1, 1 };
-    private void FindGridTarget()
+    private void FindGridTargetFromSelf()
     {
         Vector2Int turretCoord = SwarmerManager.Instance.GetCoord(transform.position);
         float gridCellSize = SwarmerManager.Instance.CellSize;
@@ -122,6 +121,7 @@ public class TurretController : MonoBehaviour
         if (list.Count > 0)
         {
             currentTarget = list[0];
+            return;
         }
 
         // exits early for searching in a certain direction
@@ -130,7 +130,6 @@ public class TurretController : MonoBehaviour
 
         for (int d = 1; d <= maxCellRange; ++d)
         {
-
             for (int i = 0; i < searchSpace.Length; ++i)
             {
                 searchSpace[i] = true;
@@ -179,6 +178,66 @@ public class TurretController : MonoBehaviour
         currentTarget = null;
     }
 
+    private void FindGridTargetFromHQ()
+    {
+        GridManager gm = GridManager.Instance;
+
+        Vector3 offsetToCenter = MathFunctions.ToVector3(((Vector2)HQ.BuildingSize) / 2f);
+        Vector3 HQPosition = gm.GetCellCenter(GameManager.Instance.HQCoords) +
+            offsetToCenter * Defines.BuildingGridCellSize;
+        Vector2Int HQCoords = SwarmerManager.Instance.GetCoord(HQPosition);
+
+        Vector2 flatPos = transform.position.xz();
+
+        Vector2Int topRight = gm.GetCoordinates(flatPos + Vector2.one * detectionRange);
+        Vector2Int bottomLeft = gm.GetCoordinates(flatPos - Vector2.one * detectionRange);
+
+        Vector2Int xBounds = new(bottomLeft.x, topRight.x);
+        Vector2Int yBounds = new(bottomLeft.y, topRight.y);
+
+        // special case to check current cell
+        var list = SwarmerManager.Instance.GetEnemiesInCell(HQCoords);
+        if (list.Count > 0)
+        {
+            currentTarget = list[0];
+            return;
+        }
+
+        int maxDistToCoverTurretRange = GetMaxDistFromTurretBound(xBounds, yBounds, HQCoords);
+
+        for (int d = 1; d <= maxDistToCoverTurretRange; ++d)
+        {
+            for (int o = 0; o <= d; ++o)
+            {
+                foreach (int sign in signs)
+                {
+                    // Check vertical samples
+                    if (CheckCellForValidTarget(HQCoords.x + (o * sign), HQCoords.y + d) ||
+                        CheckCellForValidTarget(HQCoords.x + (o * sign), HQCoords.y - d))
+                    {
+                        return;
+                    }
+
+                    // Check horizontal samples
+                    if (CheckCellForValidTarget(HQCoords.x - d, HQCoords.y + (o * sign)) ||
+                        CheckCellForValidTarget(HQCoords.x + d, HQCoords.y + (o * sign)))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+        currentTarget = null;
+    }
+
+    private int GetMaxDistFromTurretBound(Vector2Int xBounds, Vector2Int yBounds, Vector2Int searchOrigin)
+    {
+        int maxX = Mathf.Max(Mathf.Abs(searchOrigin.x - xBounds.x), Mathf.Abs(searchOrigin.x - xBounds.y));
+        int maxY = Mathf.Max(Mathf.Abs(searchOrigin.y - yBounds.x), Mathf.Abs(searchOrigin.y - yBounds.y));
+        return Mathf.Max(maxX, maxY);
+    }
+
     private bool TryGetGridTarget(int x, int y, ref bool continueSearch)
     {
         float cellSize = SwarmerManager.Instance.CellSize;
@@ -197,12 +256,33 @@ public class TurretController : MonoBehaviour
             return false;
         }
 
+        if (CheckCellForValidTarget(x, y))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected virtual bool CheckCellForValidTarget(int x, int y)
+    {
+
+        float sqrRange = MathFunctions.Square(detectionRange);
+        Vector2Int coord = new(x, y);
+
         foreach (var target in SwarmerManager.Instance.GetEnemiesInCell(coord))
         {
             if ((target.transform.position - transform.position).sqrMagnitude <= sqrRange)
             {
-                currentTarget = target;
-                return true;
+                Vector3 toTarget = target.transform.position - transform.position;
+                float range = toTarget.magnitude;
+                toTarget /= range;
+
+                if (!Physics.Raycast(transform.position, toTarget, range, 1 << Defines.EnvironmentLayer))
+                {
+                    currentTarget = target;
+                    return true;
+                }
             }
         }
         return false;
@@ -233,7 +313,7 @@ public class TurretController : MonoBehaviour
         // Horizontal rotation (Y-axis)
         Vector3 horizontalDirection = new Vector3(predictedPosition.x - transform.position.x, 0f, predictedPosition.z - transform.position.z).normalized;
         Quaternion horizontalLookRotation = Quaternion.LookRotation(horizontalDirection);
-        turretBase.rotation = Quaternion.RotateTowards(turretBase.rotation, horizontalLookRotation, Time.deltaTime * rotationSpeed);
+        turretBase.rotation = Quaternion.RotateTowards(turretBase.rotation, horizontalLookRotation, Time.fixedDeltaTime * rotationSpeed);
 
         float angleFromTarget = Quaternion.Angle(turretBase.rotation, horizontalLookRotation);
 
@@ -291,43 +371,6 @@ public class TurretController : MonoBehaviour
         // Calculate the predicted position
         return targetPosition + targetVelocity * t;
     }
-
-    //private Vector3 CalculatePredictedPosition(Vector3 targetPosition, Vector3 targetVelocity)
-    //{
-    //    if (bulletPrefab.TryGetComponent<Rigidbody>(out Rigidbody bulletRigidbody))
-    //    {
-    //        float bulletMass = bulletRigidbody.mass;
-    //        float bulletSpeed = this.bulletSpeed; // Ensure this value is correctly set
-
-    //        // Gravity in Unity (usually -9.81 on the Y-axis)
-    //        float gravity = Mathf.Abs(Physics.gravity.y);
-
-    //        // Calculate the relative position and velocity
-    //        Vector3 relativePosition = targetPosition - firePoint.position;
-    //        Vector3 relativeVelocity = targetVelocity;
-
-    //        // Horizontal distance and speed
-    //        Vector3 horizontalRelativePosition = new Vector3(relativePosition.x, 0, relativePosition.z);
-    //        float horizontalDistance = horizontalRelativePosition.magnitude;
-
-    //        // Time to reach the target based on horizontal motion
-    //        float horizontalTravelTime = horizontalDistance / bulletSpeed;
-
-    //        // Vertical motion: Calculate the necessary initial vertical speed
-    //        float verticalDisplacement = relativePosition.y;
-    //        float initialVerticalSpeed = (verticalDisplacement + 0.5f * gravity * Mathf.Pow(horizontalTravelTime, 2)) / horizontalTravelTime;
-
-    //        // Predicted position, adjusted for gravity
-    //        Vector3 predictedPosition = targetPosition + targetVelocity * horizontalTravelTime;
-    //        predictedPosition.y += initialVerticalSpeed * horizontalTravelTime - 0.5f * gravity * Mathf.Pow(horizontalTravelTime, 2);
-
-    //        return predictedPosition;
-    //    }
-
-    //    // Fallback if bulletPrefab does not have a Rigidbody
-    //    return targetPosition + targetVelocity * (detectionRange / bulletSpeed);
-    //}
-
 
     private bool IsTargetInRange()
     {

@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class HQ : BuildableObject
 {
-    public override Vector2Int Size => new Vector2Int(2, 2);
+    public override Vector2Int Size => BuildingSize;
+
+    public static Vector2Int BuildingSize => new Vector2Int(2, 2);
 
     protected override void Awake()
     {

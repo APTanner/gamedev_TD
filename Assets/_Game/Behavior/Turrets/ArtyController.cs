@@ -20,7 +20,7 @@ public class ArtyController : TurretController
         // Horizontal rotation (Y-axis)
         Vector3 horizontalDirection = new Vector3(predictedPosition.x - transform.position.x, 0f, predictedPosition.z - transform.position.z).normalized;
         Quaternion horizontalLookRotation = Quaternion.LookRotation(horizontalDirection);
-        turretBase.rotation = Quaternion.RotateTowards(turretBase.rotation, horizontalLookRotation, Time.deltaTime * rotationSpeed);
+        turretBase.rotation = Quaternion.RotateTowards(turretBase.rotation, horizontalLookRotation, Time.fixedDeltaTime * rotationSpeed);
 
         float angleFromTarget = Quaternion.Angle(turretBase.rotation, horizontalLookRotation);
 
@@ -40,10 +40,26 @@ public class ArtyController : TurretController
         float elevationAngle = Mathf.Acos(horizontalVelocityProportion);
         elevationAngle *= Mathf.Rad2Deg;
         Quaternion elevationRotation = Quaternion.Euler(-elevationAngle, 0f, 0f);
-        gunPivot.localRotation = Quaternion.RotateTowards(gunPivot.localRotation, elevationRotation, Time.deltaTime * rotationSpeed);
+        gunPivot.localRotation = Quaternion.RotateTowards(gunPivot.localRotation, elevationRotation, Time.fixedDeltaTime * rotationSpeed);
 
         float verticalAngleFromTarget = Quaternion.Angle(gunPivot.localRotation, elevationRotation);
 
         return Mathf.Max(angleFromTarget, verticalAngleFromTarget) <= Defines.TurretAimTolerance;
+    }
+
+    protected override bool CheckCellForValidTarget(int x, int y)
+    {
+        float sqrRange = MathFunctions.Square(detectionRange);
+        Vector2Int coord = new(x, y);
+
+        foreach (var target in SwarmerManager.Instance.GetEnemiesInCell(coord))
+        {
+            if ((target.transform.position - transform.position).sqrMagnitude <= sqrRange)
+            {
+                currentTarget = target;
+                return true;
+            }
+        }
+        return false;
     }
 }

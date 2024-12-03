@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public int WaveCount => m_spawners.Length;
     public float TimeLeftInWave => m_waveTime;
 
+    public Vector2Int HQCoords => LevelData.HQCoordinates;
+
     private void Awake()
     {
         Instance = this;
