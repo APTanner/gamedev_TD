@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
 
             m_spawners[spawner.WaveNum-1].Add(spawnerGo);
             spawnerGo.enemyNum = spawner.EnemyCount;
+            spawnerGo.waveNum = spawner.WaveNum;
         }
     }
 
@@ -123,11 +124,6 @@ public class GameManager : MonoBehaviour
         }
 
         Switchboard.WaveStart(m_currentWave);
-
-        foreach (EnemySpawner spawner in m_spawners[m_currentWave-1])
-        {
-            spawner.SpawnSwarmers();
-        }
 
         m_waveTime = 20;
         s_state = GameState.InWave;

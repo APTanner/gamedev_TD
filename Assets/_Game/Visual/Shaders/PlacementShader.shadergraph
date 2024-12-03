@@ -1048,8 +1048,8 @@
     "m_ObjectId": "110498dc048c43d0b64cefdae27bd0cc",
     "m_Title": "Scanlines for a bit of detail",
     "m_Position": {
-        "x": -1975.9998779296875,
-        "y": 583.9999389648438
+        "x": -1976.0,
+        "y": 584.0
     }
 }
 
@@ -1776,8 +1776,8 @@
     "m_ObjectId": "31c1fead4f9c42499150ab404c1208b3",
     "m_Title": "Glowing noise for a bit of idle movement",
     "m_Position": {
-        "x": -1847.9998779296875,
-        "y": 1423.9998779296875
+        "x": -1848.0,
+        "y": 1424.0
     }
 }
 

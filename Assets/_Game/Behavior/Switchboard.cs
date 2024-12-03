@@ -8,7 +8,7 @@ public static class Switchboard
         OnWaveStart?.Invoke(wave);
     }
 
-    //              The index of the next wave 
+    // The index of the wave after the one that just ended
     public static event Action<int> OnWaveEnd;
     public static void WaveEnd(int wave)
     {
@@ -27,7 +27,7 @@ public static class Switchboard
         OnLose?.Invoke();
     }
 
-    //              The level index
+    // The current level index
     public static event Action<int> OnLevelStart;
     public static void LevelStart(int levelIndex)
     {

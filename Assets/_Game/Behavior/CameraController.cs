@@ -47,11 +47,9 @@ public class CameraController : MonoBehaviour
         // for a few frames, which means it must travel very fast in those few frames. This may break on
         // your machine so change it if that's the case
         float scrollInput = Input.GetAxisRaw("Mouse ScrollWheel");
-        Debug.Log(scrollInput);
         if (scrollInput != 0)
         {
             Vector3 zoomDirection = scrollInput * zoomSpeed * childCam.forward;
-            Debug.Log(zoomDirection.magnitude);
             targetPos += zoomDirection * Time.deltaTime;
         }
 

@@ -15,4 +15,7 @@ public static class Defines
     public const int HQMaxHealth = 1000;
 
     public const float RicochetAngle = 80;
+
+    public const float EnemySpawnMarkerFadeInTime = .2f;
+    public const float EnemySpwanMarkerFadeOutTime = 1f;
 }
