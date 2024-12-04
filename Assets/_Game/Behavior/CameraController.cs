@@ -135,15 +135,9 @@ public class CameraController : MonoBehaviour
 
     private void RotateX(float angle)
     {
-        childCam.localRotation = Quaternion.Euler(-angle * Time.deltaTime, 0f, 0f) * childCam.localRotation;
-        Vector3 rot = childCam.localRotation.eulerAngles;
-        if (rot.x > 180f)
-        {
-            rot.x -= 360f;
-        }
-
-        rot.x = Mathf.Clamp(rot.x, 10f, 80f);
-        childCam.localRotation = Quaternion.Euler(rot);
+        Vector3 rot = childCam.localEulerAngles;
+        rot.x = Mathf.Clamp(rot.x - angle * Time.deltaTime, 10f, 80f);
+        childCam.localEulerAngles = rot;
     }
 
     private void RotateY(float angle)

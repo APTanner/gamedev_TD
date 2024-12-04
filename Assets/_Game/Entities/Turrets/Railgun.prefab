@@ -719,12 +719,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRange: 200
-  closeDetectionRange: 5
+  closeDetectionRange: 20
   rotationSpeed: 400
   fireRate: 3
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 128
   minVerticalAimDistance: 5
   turretBase: {fileID: 5889039889410439692}
   gunPivot: {fileID: 218917245567389166}

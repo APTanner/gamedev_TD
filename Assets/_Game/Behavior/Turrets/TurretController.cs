@@ -131,6 +131,7 @@ public class TurretController : MonoBehaviour
         //                     NW     NE    SW    SE    WS   WN     ES    EW
         bool[] searchSpace = { true, true, true, true, true, true, true, true };
 
+
         for (int d = 1; d <= maxCellRange; ++d)
         {
             for (int i = 0; i < searchSpace.Length; ++i)
@@ -184,16 +185,17 @@ public class TurretController : MonoBehaviour
     private void FindGridTargetFromHQ()
     {
         GridManager gm = GridManager.Instance;
+        SwarmerManager sm = SwarmerManager.Instance;
 
         Vector3 offsetToCenter = MathFunctions.ToVector3(((Vector2)HQ.BuildingSize) / 2f);
         Vector3 HQPosition = gm.GetCellCenter(GameManager.Instance.HQCoords) +
             offsetToCenter * Defines.BuildingGridCellSize;
-        Vector2Int HQCoords = SwarmerManager.Instance.GetCoord(HQPosition);
+        Vector2Int HQCoords = sm.GetCoord(HQPosition);
 
-        Vector2 flatPos = transform.position.xz();
+        Vector3 flatPos = transform.position;
 
-        Vector2Int topRight = gm.GetCoordinates(flatPos + Vector2.one * detectionRange);
-        Vector2Int bottomLeft = gm.GetCoordinates(flatPos - Vector2.one * detectionRange);
+        Vector2Int topRight = sm.GetCoord(flatPos + Vector3.one * detectionRange);
+        Vector2Int bottomLeft = sm.GetCoord(flatPos - Vector3.one * detectionRange);
 
         Vector2Int xBounds = new(bottomLeft.x, topRight.x);
         Vector2Int yBounds = new(bottomLeft.y, topRight.y);
@@ -214,16 +216,27 @@ public class TurretController : MonoBehaviour
             {
                 foreach (int sign in signs)
                 {
+                    Vector2Int up = new(HQCoords.x + (o * sign), HQCoords.y + d);
+                    Vector2Int down = new(HQCoords.x + (o * sign), HQCoords.y - d);
+
                     // Check vertical samples
-                    if (CheckCellForValidTarget(HQCoords.x + (o * sign), HQCoords.y + d) ||
-                        CheckCellForValidTarget(HQCoords.x + (o * sign), HQCoords.y - d))
+                    if (WithinRangeBounds(xBounds, yBounds, up) && CheckCellForValidTarget(up) ||
+                        WithinRangeBounds(xBounds, yBounds, down) && CheckCellForValidTarget(down))
                     {
                         return;
                     }
 
+                    // If we are checking the farthest offset (o value) then the corners have already
+                    // been taken care of by the vertical samples. No need to check the horizontal 
+                    // ones since they are duplicates
+                    if (o == d) continue;
+
+                    Vector2Int left = new(HQCoords.x - d, HQCoords.y + (o * sign));
+                    Vector2Int right = new(HQCoords.x + d, HQCoords.y + (o * sign));
+
                     // Check horizontal samples
-                    if (CheckCellForValidTarget(HQCoords.x - d, HQCoords.y + (o * sign)) ||
-                        CheckCellForValidTarget(HQCoords.x + d, HQCoords.y + (o * sign)))
+                    if (WithinRangeBounds(xBounds, yBounds, left) && CheckCellForValidTarget(left) ||
+                        WithinRangeBounds(xBounds, yBounds, right) && CheckCellForValidTarget(right))
                     {
                         return;
                     }
@@ -232,6 +245,12 @@ public class TurretController : MonoBehaviour
         }
 
         currentTarget = null;
+    }
+
+    private bool WithinRangeBounds(Vector2Int xBounds, Vector2Int yBounds, Vector2Int coords)
+    {
+        return coords.x >= xBounds.x && coords.x <= xBounds.y &&
+               coords.y >= yBounds.x && coords.y <= yBounds.y;
     }
 
     private int GetMaxDistFromTurretBound(Vector2Int xBounds, Vector2Int yBounds, Vector2Int searchOrigin)
@@ -244,8 +263,6 @@ public class TurretController : MonoBehaviour
     private bool TryGetGridTarget(int x, int y, ref bool continueSearch)
     {
         float cellSize = SwarmerManager.Instance.CellSize;
-        float sqrRange = MathFunctions.Square(detectionRange);
-
 
         Vector2Int coord = new Vector2Int(x, y);
         Vector3 cellPosition = SwarmerManager.Instance.GetCellPosition(coord);
@@ -267,9 +284,13 @@ public class TurretController : MonoBehaviour
         return false;
     }
 
+    protected bool CheckCellForValidTarget(Vector2Int coord)
+    {
+        return CheckCellForValidTarget(coord.x, coord.y);
+    }
+
     protected virtual bool CheckCellForValidTarget(int x, int y)
     {
-
         float sqrRange = MathFunctions.Square(detectionRange);
         Vector2Int coord = new(x, y);
 
