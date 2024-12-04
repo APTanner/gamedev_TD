@@ -50,18 +50,7 @@ public class TurretController : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        if (IsPreview)
-        {
-            return;
-        }
-
         fireCooldown -= Time.fixedDeltaTime;
-
-        if (!FindCloseTarget())
-        {
-            //FindGridTargetFromSelf();
-            FindGridTargetFromHQ();
-        }
 
         if (currentTarget != null)
         {
@@ -75,6 +64,20 @@ public class TurretController : MonoBehaviour
         else
         {
             OnStopFiring();
+        }
+    }
+
+    protected virtual void Update()
+    {
+        if (IsPreview)
+        {
+            return;
+        }
+
+        if (!FindCloseTarget())
+        {
+            //FindGridTargetFromSelf();
+            FindGridTargetFromHQ();
         }
     }
 
