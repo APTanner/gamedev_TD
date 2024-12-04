@@ -6,6 +6,6 @@ public class Railgun : BuildableObject
     {
         base.Awake();
         Health = 1000;
-        Price = 100;
+        Price = 250;
     }
 }

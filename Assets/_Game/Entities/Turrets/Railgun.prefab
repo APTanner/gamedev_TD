@@ -704,7 +704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 2, y: 2}
   health: 1000
-  price: 100
+  price: 250
   isSellable: 1
 --- !u!114 &6339928951290595683
 MonoBehaviour:
