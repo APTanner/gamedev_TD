@@ -11,10 +11,7 @@ public class TurretController : MonoBehaviour
 
     public float minVerticalAimDistance = 5f;
 
-    protected MonoBehaviour currentTarget;
-    private Vector3 m_targetFirePosition;
-
-    private float fireCooldown = 0f;
+    protected float fireCooldown = 0f;
 
     public Transform turretBase;
     public Transform gunPivot;
@@ -25,6 +22,10 @@ public class TurretController : MonoBehaviour
     public VisualEffect muzzleFlashVFX;
 
     public bool IsPreview { get; set; } = false;
+
+    protected Target m_target = new Target();
+
+    public bool HasTarget => IsTargetValid();
 
     protected virtual void Awake()
     {
@@ -46,16 +47,28 @@ public class TurretController : MonoBehaviour
         {
             muzzleFlashVFX.Stop();
         }
+
+        TurretManager.Instance.Register(this);
     }
 
-    protected virtual void FixedUpdate()
+    public virtual void UpdateTurret()
     {
+        if (IsPreview)
+        {
+            return;
+        }
+
         fireCooldown -= Time.fixedDeltaTime;
 
-        if (currentTarget != null)
+        if (!HasTarget && !FindCloseTarget())
+        {
+            FindTarget();
+        }
+
+        if (m_target.IsValid)
         {
             bool bIsAimed = RotateToFaceTarget();
-            if (fireCooldown <= 0f && bIsAimed && IsTargetInRange())
+            if (fireCooldown <= 0f && bIsAimed)
             {
                 Fire();
                 fireCooldown = 1f / fireRate;
@@ -67,21 +80,12 @@ public class TurretController : MonoBehaviour
         }
     }
 
-    protected virtual void Update()
+    public void AssignTarget(SwarmerController controller)
     {
-        if (IsPreview)
-        {
-            return;
-        }
-
-        if (!FindCloseTarget())
-        {
-            //FindGridTargetFromSelf();
-            FindGridTargetFromHQ();
-        }
+        m_target.UpdateTarget(controller);
     }
 
-    private bool FindCloseTarget()
+    protected bool FindCloseTarget()
     {
         Collider[] closeEnemies = Physics.OverlapSphere(transform.position, closeDetectionRange, 1 << Defines.SwarmerLayer);
         if (closeEnemies.Length > 0)
@@ -101,36 +105,30 @@ public class TurretController : MonoBehaviour
                 }
             }
 
-            if (closest != null && closest.TryGetComponent<SwarmerController>(out var enemyController))
+            // when it's in our danger area we do not care about marked targets
+            if (closest != null &&
+                closest.TryGetComponent<SwarmerController>(out var enemyController))
             {
-                currentTarget = enemyController;
+                m_target.UpdateTarget(enemyController);
                 return true;
             }
         }
-
-        currentTarget = null;
         return false;
     }
 
     private static readonly int[] signs = { -1, 1 };
-    private void FindGridTargetFromSelf()
+    protected virtual void FindTarget()
     {
         Vector2Int turretCoord = SwarmerManager.Instance.GetCoord(transform.position);
         float gridCellSize = SwarmerManager.Instance.CellSize;
         int maxCellRange = Mathf.CeilToInt(detectionRange / gridCellSize);
 
-        // special case to check current cell
-        var list = SwarmerManager.Instance.GetEnemiesInCell(turretCoord);
-        if (list.Count > 0)
-        {
-            currentTarget = list[0];
-            return;
-        }
-
         // exits early for searching in a certain direction
         //                     NW     NE    SW    SE    WS   WN     ES    EW
         bool[] searchSpace = { true, true, true, true, true, true, true, true };
 
+        // dummy reference passed in
+        TryGetGridTarget(turretCoord.x, turretCoord.y, ref searchSpace[0]);
 
         for (int d = 1; d <= maxCellRange; ++d)
         {
@@ -178,73 +176,6 @@ public class TurretController : MonoBehaviour
                 }
             }
         }
-
-        currentTarget = null;
-    }
-
-    private void FindGridTargetFromHQ()
-    {
-        GridManager gm = GridManager.Instance;
-        SwarmerManager sm = SwarmerManager.Instance;
-
-        Vector3 offsetToCenter = MathFunctions.ToVector3(((Vector2)HQ.BuildingSize) / 2f);
-        Vector3 HQPosition = gm.GetCellCenter(GameManager.Instance.HQCoords) +
-            offsetToCenter * Defines.BuildingGridCellSize;
-        Vector2Int HQCoords = sm.GetCoord(HQPosition);
-
-        Vector3 flatPos = transform.position;
-
-        Vector2Int topRight = sm.GetCoord(flatPos + Vector3.one * detectionRange);
-        Vector2Int bottomLeft = sm.GetCoord(flatPos - Vector3.one * detectionRange);
-
-        Vector2Int xBounds = new(bottomLeft.x, topRight.x);
-        Vector2Int yBounds = new(bottomLeft.y, topRight.y);
-
-        // special case to check current cell
-        var list = SwarmerManager.Instance.GetEnemiesInCell(HQCoords);
-        if (list.Count > 0)
-        {
-            currentTarget = list[0];
-            return;
-        }
-
-        int maxDistToCoverTurretRange = GetMaxDistFromTurretBound(xBounds, yBounds, HQCoords);
-
-        for (int d = 1; d <= maxDistToCoverTurretRange; ++d)
-        {
-            for (int o = 0; o <= d; ++o)
-            {
-                foreach (int sign in signs)
-                {
-                    Vector2Int up = new(HQCoords.x + (o * sign), HQCoords.y + d);
-                    Vector2Int down = new(HQCoords.x + (o * sign), HQCoords.y - d);
-
-                    // Check vertical samples
-                    if (WithinRangeBounds(xBounds, yBounds, up) && CheckCellForValidTarget(up) ||
-                        WithinRangeBounds(xBounds, yBounds, down) && CheckCellForValidTarget(down))
-                    {
-                        return;
-                    }
-
-                    // If we are checking the farthest offset (o value) then the corners have already
-                    // been taken care of by the vertical samples. No need to check the horizontal 
-                    // ones since they are duplicates
-                    if (o == d) continue;
-
-                    Vector2Int left = new(HQCoords.x - d, HQCoords.y + (o * sign));
-                    Vector2Int right = new(HQCoords.x + d, HQCoords.y + (o * sign));
-
-                    // Check horizontal samples
-                    if (WithinRangeBounds(xBounds, yBounds, left) && CheckCellForValidTarget(left) ||
-                        WithinRangeBounds(xBounds, yBounds, right) && CheckCellForValidTarget(right))
-                    {
-                        return;
-                    }
-                }
-            }
-        }
-
-        currentTarget = null;
     }
 
     private bool WithinRangeBounds(Vector2Int xBounds, Vector2Int yBounds, Vector2Int coords)
@@ -289,24 +220,17 @@ public class TurretController : MonoBehaviour
         return CheckCellForValidTarget(coord.x, coord.y);
     }
 
-    protected virtual bool CheckCellForValidTarget(int x, int y)
+    private bool CheckCellForValidTarget(int x, int y)
     {
         float sqrRange = MathFunctions.Square(detectionRange);
         Vector2Int coord = new(x, y);
 
         foreach (var target in SwarmerManager.Instance.GetEnemiesInCell(coord))
         {
-            if ((target.transform.position - transform.position).sqrMagnitude <= sqrRange)
+            if (!target.IsMarked && IsPositionTargetable(target.transform.position))
             {
-                Vector3 toTarget = target.transform.position - transform.position;
-                float range = toTarget.magnitude;
-                toTarget /= range;
-
-                if (!Physics.Raycast(transform.position, toTarget, range, 1 << Defines.EnvironmentLayer))
-                {
-                    currentTarget = target;
-                    return true;
-                }
+                m_target.UpdateTarget(target);
+                return true;
             }
         }
         return false;
@@ -314,23 +238,8 @@ public class TurretController : MonoBehaviour
 
     protected virtual bool RotateToFaceTarget()
     {
-        if (currentTarget == null)
-        {
-            return false;
-        }
-
-        Vector3 targetPosition;
-        Vector3 targetVelocity = Vector3.zero;
-
-        if (currentTarget is SwarmerController enemy)
-        {
-            targetPosition = enemy.transform.position;
-            targetVelocity = enemy.GetComponent<Rigidbody>().linearVelocity;
-        }
-        else
-        {
-            return false;
-        }
+        Vector3 targetPosition = m_target.lastPosition;
+        Vector3 targetVelocity = m_target.rigidbody.linearVelocity;
 
         Vector3 predictedPosition = CalculatePredictedPosition(targetPosition, targetVelocity);
 
@@ -396,18 +305,6 @@ public class TurretController : MonoBehaviour
         return targetPosition + targetVelocity * t;
     }
 
-    private bool IsTargetInRange()
-    {
-        if (currentTarget == null)
-        {
-            return false;
-        }
-
-        Vector3 targetPosition = currentTarget is IBuilding building ? building.GetPosition() : (currentTarget as SwarmerController).transform.position;
-        float distance = Vector3.Distance(transform.position, targetPosition);
-        return distance <= detectionRange;
-    }
-
     protected virtual void Fire()
     {
         if (muzzleFlashVFX != null)
@@ -426,5 +323,84 @@ public class TurretController : MonoBehaviour
     protected virtual void OnStopFiring()
     {
 
+    }
+
+    private bool IsPositionTargetable(Vector3 position)
+    {
+        Vector3 toTarget = position - transform.position;
+        float range = toTarget.magnitude;
+        toTarget /= range;
+
+        if (range <= detectionRange && !Physics.Raycast(transform.position, toTarget, range, 1 << Defines.EnvironmentLayer))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected virtual bool IsTargetValid()
+    {
+        if (m_target.IsValid && m_target.IsAlive())
+        {
+            m_target.UpdateTarget();
+
+            if (IsPositionTargetable(m_target.lastPosition))
+            {
+                return true;
+            }
+        }
+
+        m_target.Invalidate();
+        return false;
+    }
+
+    protected void OnDestroy()
+    {
+        if (m_target.IsValid)
+        {
+            m_target.Invalidate();
+        }
+
+        TurretManager.Instance.Deregister(this);
+    }
+
+    protected struct Target
+    {
+        public SwarmerController target;
+        public Rigidbody rigidbody { get; private set; }
+        public Vector3 lastPosition { get; private set; }
+        public bool IsValid { get; private set; }
+
+        public void UpdateTarget()
+        {
+            lastPosition = target.transform.position;
+        }
+
+        public void UpdateTarget(SwarmerController newTarget)
+        {
+            target = newTarget;
+            newTarget.MarkTarget();
+
+            IsValid = true;
+            rigidbody = target.GetComponent<Rigidbody>();
+
+            UpdateTarget();
+        }
+
+        public readonly bool IsAlive()
+        {
+            return target != null && (target as Component) != null;
+        }
+
+        public void Invalidate()
+        {
+            IsValid = false;
+            if (target != null)
+            {
+                target.UnmarkTarget();
+                target = null;
+            }
+        }
     }
 }

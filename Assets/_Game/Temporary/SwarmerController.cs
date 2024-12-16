@@ -446,16 +446,16 @@ public class SwarmerController : MonoBehaviour
                 float value = Mathf.Clamp(0.5f * (dist - m_manager.AttackDistance), -1, 1);
                 //Debug.Log($"Current dist to target: {dist}. The current magnitude of acceleration: {value}");
                 desiredV = value * m_manager.MaxSpeed * (toTarget / dist);
-            
-                 }
-    else
-    {
-        if (attackVFX.aliveParticleCount > 0)
-        {
-            attackVFX.Stop(); // Stop the VFX when not attacking
-        }
-        m_bAttacking = false;
-    }
+
+            }
+            else
+            {
+                if (attackVFX.aliveParticleCount > 0)
+                {
+                    attackVFX.Stop(); // Stop the VFX when not attacking
+                }
+                m_bAttacking = false;
+            }
         }
 
         Vector2 dv = Vector2.ClampMagnitude(desiredV-currentV, m_manager.Acceleration);
@@ -475,6 +475,24 @@ public class SwarmerController : MonoBehaviour
         return distance != 0 && distance < m_manager.ObstacleAvoidSlowdownRange;
     }
 
+    protected void OnDestroy()
+    {
+        m_manager.Deregister(this);
+    }
+
+    private bool m_bMarked = false;
+    public bool IsMarked => m_bMarked;
+
+    public void MarkTarget()
+    {
+        m_bMarked = true;
+    }
+
+    public void UnmarkTarget()
+    {
+        m_bMarked = false;
+    }
+
     private struct AvoidanceDistances
     {
         public float CenterDistance;
@@ -484,12 +502,5 @@ public class SwarmerController : MonoBehaviour
         public float LeftDistances;
 
         public float AvoidanceStrength;
-    }
-
-    protected void OnDestroy()
-    {
-        m_manager.Deregister(this);
-
-
     }
 }

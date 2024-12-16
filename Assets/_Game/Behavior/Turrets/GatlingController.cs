@@ -7,10 +7,8 @@ public class GatlingController : TurretController
 
     private bool isFiring = false;
 
-    protected override void Update()
+    protected void Update()
     {
-        base.Update();
-
         if (isFiring)
         {
             RotateBarrel();

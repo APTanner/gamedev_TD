@@ -4,13 +4,8 @@ public class ArtyController : TurretController
 {
     protected override bool RotateToFaceTarget()
     {
-        if (currentTarget == null)
-        {
-            return false;
-        }
-
-        Vector3 targetPosition = currentTarget.GetComponent<Rigidbody>().position;
-        Vector3 targetVelocity = currentTarget.GetComponent<Rigidbody>().linearVelocity;
+        Vector3 targetPosition = m_target.lastPosition;
+        Vector3 targetVelocity = m_target.rigidbody.linearVelocity;
 
         float g = Mathf.Abs(Physics.gravity.y);
         float timeToImpact = MathFunctions.Sqrt2 * bulletSpeed / g;
@@ -47,19 +42,54 @@ public class ArtyController : TurretController
         return Mathf.Max(angleFromTarget, verticalAngleFromTarget) <= Defines.TurretAimTolerance;
     }
 
-    protected override bool CheckCellForValidTarget(int x, int y)
+    // targets will be found by the turret manager -> just don't do anything
+    protected override void FindTarget()
     {
-        float sqrRange = MathFunctions.Square(detectionRange);
-        Vector2Int coord = new(x, y);
+        return;
+    }
 
-        foreach (var target in SwarmerManager.Instance.GetEnemiesInCell(coord))
+    protected override bool IsTargetValid()
+    {
+        if (m_target.IsValid && m_target.IsAlive())
         {
-            if ((target.transform.position - transform.position).sqrMagnitude <= sqrRange)
+            m_target.UpdateTarget();
+            if ((m_target.lastPosition - transform.position).sqrMagnitude <= detectionRange * detectionRange)
             {
-                currentTarget = target;
                 return true;
             }
         }
+        m_target.Invalidate();
         return false;
+    }
+
+    public override void UpdateTurret()
+    {
+        if (IsPreview)
+        {
+            return;
+        }
+
+        fireCooldown -= Time.fixedDeltaTime;
+
+        if (!HasTarget && !FindCloseTarget())
+        {
+            FindTarget();
+        }
+
+        if (m_target.IsValid)
+        {
+            bool bIsAimed = RotateToFaceTarget();
+            if (fireCooldown <= 0f && bIsAimed)
+            {
+                Fire();
+                // get a new target after we fire
+                m_target.Invalidate();
+                fireCooldown = 1f / fireRate;
+            }
+        }
+        else
+        {
+            OnStopFiring();
+        }
     }
 }

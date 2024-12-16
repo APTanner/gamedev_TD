@@ -25,6 +25,13 @@ public class GameManager : MonoBehaviour
     public float TimeLeftInWave => m_waveTime;
 
     public Vector2Int HQCoords => LevelData.HQCoordinates;
+    public Vector3 GetHQPosition()
+    {
+        GridManager gm = GridManager.Instance;
+        Vector3 offsetToCenter = MathFunctions.ToVector3(((Vector2)HQ.BuildingSize) / 2f);
+        return gm.GetCellCenter(HQCoords) +
+            offsetToCenter * Defines.BuildingGridCellSize;
+    }
 
     private void Awake()
     {

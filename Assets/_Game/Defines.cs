@@ -18,4 +18,6 @@ public static class Defines
 
     public const float EnemySpawnMarkerFadeInTime = .2f;
     public const float EnemySpwanMarkerFadeOutTime = 1f;
+
+    public const float HQThreatDistance = 15f;
 }

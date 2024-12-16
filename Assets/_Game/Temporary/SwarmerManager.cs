@@ -229,6 +229,39 @@ public class SwarmerManager : MonoBehaviour
         return s_emptyCell; // Return an empty list if no enemies are in the cell
     }
 
+    public List<List<SwarmerController>> GetMostPopulousCells()
+    {
+        const int maxCount = 10;
+
+        List<(Vector2Int, int)> ls = new();
+        foreach (var (coords, list) in m_enemiesByCell)
+        {
+            ls.Add((coords, list.Count));
+            for (int i = 0; i < ls.Count-1; ++i)
+            {
+                if (ls[i].Item2 < ls[i+1].Item2)
+                {
+                    (ls[i], ls[i+1]) = (ls[i+1], ls[i]);
+                }
+            }
+            if (ls.Count > maxCount)
+            {
+                ls.RemoveAt(ls.Count-1);
+            }
+        }
+
+        List<List<SwarmerController>> result = new();
+        foreach (var (coord, count) in ls)
+        {
+            if (count > 0)
+            {
+                result.Add(m_enemiesByCell[coord]);
+            }
+        }
+
+        return result;
+    }
+
     public void Reset()
     {
         var arrayCopy = m_swarmers.ToArray();
