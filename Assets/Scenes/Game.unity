@@ -11936,6 +11936,7 @@ MonoBehaviour:
   qualityDropdown: {fileID: 485188276}
   resolutionDropdown: {fileID: 715646241}
   fullscreenButton: {fileID: 816631251}
+  vsyncButton: {fileID: 0}
   resolutionPanel: {fileID: 635422137}
   fullscreenPanel: {fileID: 2116006596}
   manualResolutions:
@@ -15789,51 +15790,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1600891602}
   m_CullTransparentMesh: 1
---- !u!1 &1605727424
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1605727426}
-  - component: {fileID: 1605727425}
-  m_Layer: 0
-  m_Name: LevelCreator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1605727425
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1605727424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 010f293dcf914b0429817807b3dab6c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LevelData: {fileID: 11400000, guid: 8e2817cfb6a1cb2439d6cd287eebb6ef, type: 2}
---- !u!4 &1605727426
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1605727424}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1392.3, y: 297.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1616547645
 GameObject:
   m_ObjectHideFlags: 0
@@ -19880,7 +19836,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1595085684}
   - {fileID: 832575519}
-  - {fileID: 1605727426}
   - {fileID: 1913279436}
   - {fileID: 410087041}
   - {fileID: 1704644228}

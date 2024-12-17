@@ -9,6 +9,7 @@ public class SettingsManager : MonoBehaviour
     public TMP_Dropdown qualityDropdown;
     public TMP_Dropdown resolutionDropdown;
     public Button fullscreenButton;
+    public Button vsyncButton;
     public GameObject resolutionPanel;
     public GameObject fullscreenPanel;
 
@@ -30,10 +31,12 @@ public class SettingsManager : MonoBehaviour
     private int currentQualityIndex;
     private int currentResolutionIndex;
     private bool isFullscreen;
+    private bool isVSyncEnabled;
 
     private const string QUALITY_KEY = "QualityLevel";
     private const string RESOLUTION_KEY = "ResolutionIndex";
     private const string FULLSCREEN_KEY = "IsFullscreen";
+    private const string VSYNC_KEY = "IsVSyncEnabled";
 
     private void Awake()
     {
@@ -47,6 +50,7 @@ public class SettingsManager : MonoBehaviour
         ApplyUIVisibility();
         ApplySettings();
         UpdateFullscreenButtonText();
+        UpdateVSyncButtonText();
     }
 
     private void SetupUIOptions()
@@ -81,6 +85,10 @@ public class SettingsManager : MonoBehaviour
         if (fullscreenButton != null)
         {
             fullscreenButton.onClick.AddListener(OnFullscreenToggle);
+        }
+        if (vsyncButton != null) // Assign VSync button
+        {
+            vsyncButton.onClick.AddListener(OnVSyncToggle);
         }
 #endif
     }
@@ -129,6 +137,19 @@ public class SettingsManager : MonoBehaviour
 #endif
     }
 
+    public void OnVSyncToggle()
+    {
+#if !UNITY_WEBGL
+        isVSyncEnabled = !isVSyncEnabled;
+
+        QualitySettings.vSyncCount = isVSyncEnabled ? 1 : 0;
+
+        PlayerPrefs.SetInt(VSYNC_KEY, isVSyncEnabled ? 1 : 0);
+        PlayerPrefs.Save();
+        UpdateVSyncButtonText();
+#endif
+    }
+
     private void UpdateFullscreenButtonText()
     {
 #if !UNITY_WEBGL
@@ -143,11 +164,26 @@ public class SettingsManager : MonoBehaviour
 #endif
     }
 
+    private void UpdateVSyncButtonText()
+    {
+#if !UNITY_WEBGL
+        if (vsyncButton != null)
+        {
+            TMP_Text buttonText = vsyncButton.GetComponentInChildren<TMP_Text>();
+            if (buttonText != null)
+            {
+                buttonText.text = isVSyncEnabled ? "X" : "";
+            }
+        }
+#endif
+    }
+
     private void LoadSettingsFromPlayerPrefs()
     {
         currentQualityIndex = PlayerPrefs.GetInt(QUALITY_KEY, QualitySettings.GetQualityLevel());
         currentResolutionIndex = PlayerPrefs.GetInt(RESOLUTION_KEY, 0);
         isFullscreen = PlayerPrefs.GetInt(FULLSCREEN_KEY, Screen.fullScreen ? 1 : 0) == 1;
+        isVSyncEnabled = PlayerPrefs.GetInt(VSYNC_KEY, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
     }
 
     private void ApplySettings()
@@ -160,6 +196,7 @@ public class SettingsManager : MonoBehaviour
             var chosenRes = manualResolutions[currentResolutionIndex];
             Screen.SetResolution(chosenRes.width, chosenRes.height, isFullscreen);
         }
+        QualitySettings.vSyncCount = isVSyncEnabled ? 1 : 0;
 #endif
     }
 }
