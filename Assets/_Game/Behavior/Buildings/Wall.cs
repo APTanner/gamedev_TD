@@ -6,7 +6,7 @@ public class Wall : BuildableObject
     {
         base.Awake();
         Health = 1000;
-        Price = 25;
+        Price = 20;
     }
 
     public override Vector2Int Size => new Vector2Int(1, 1);
