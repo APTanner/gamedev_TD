@@ -5,13 +5,13 @@ using static MainMenuManager;
 
 public class PauseManager : MonoBehaviour
 {
-    public enum MenuState { PauseMenu, Controls }
+    public enum MenuState { PauseMenu, Controls, Settings }
     public static PauseManager Instance { get; private set; }
 
     public GameObject[] panels; // 0: StartMenu, 1: Controls
 
     [SerializeField] private GameObject pausePanel;
-    public Button controlsButton, closeControlsButton, exitButton, resumeButton, menuButton;
+    public Button controlsButton, closeControlsButton, exitButton, resumeButton, menuButton, settingsButton, closeSettingsButton;
 
     private bool isPaused = false;
 
@@ -25,6 +25,8 @@ public class PauseManager : MonoBehaviour
 
         controlsButton.onClick.AddListener(() => ChangeMenu(MenuState.Controls));
         closeControlsButton.onClick.AddListener(() => ChangeMenu(MenuState.PauseMenu));
+        settingsButton.onClick.AddListener(() => ChangeMenu(MenuState.Settings));
+        closeSettingsButton.onClick.AddListener(() => ChangeMenu(MenuState.PauseMenu));
 
         resumeButton.onClick.AddListener(TogglePause);
         menuButton.onClick.AddListener(GoToMainMenu);
