@@ -4,10 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
-    public enum MenuState { StartMenu, Settings, Controls }
+    public enum MenuState { StartMenu, Settings, Controls, Credits }
 
-    public GameObject[] panels; // 0: StartMenu, 1: Settings, 2: Controls
-    public Button startButton, controlsButton, settingsButton, closeControlsButton, closeSettingsButton, exitButton;
+    public GameObject[] panels; // 0: StartMenu, 1: Settings, 2: Controls, 3: Credits
+    public Button startButton, controlsButton, settingsButton, creditsButton, closeControlsButton, closeSettingsButton, closeCreditsButton, exitButton;
 
     void Start()
     {
@@ -15,8 +15,10 @@ public class MainMenuManager : MonoBehaviour
         startButton.onClick.AddListener(StartGame);
         controlsButton.onClick.AddListener(() => ChangeMenu(MenuState.Controls));
         settingsButton.onClick.AddListener(() => ChangeMenu(MenuState.Settings));
+        creditsButton.onClick.AddListener(() => ChangeMenu(MenuState.Credits));
         closeControlsButton.onClick.AddListener(() => ChangeMenu(MenuState.StartMenu));
         closeSettingsButton.onClick.AddListener(() => ChangeMenu(MenuState.StartMenu));
+        closeCreditsButton.onClick.AddListener(() => ChangeMenu(MenuState.StartMenu));
 
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
