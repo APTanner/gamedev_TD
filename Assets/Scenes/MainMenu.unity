@@ -10998,7 +10998,7 @@ MonoBehaviour:
   fullscreenButton: {fileID: 439935322}
   vsyncButton: {fileID: 273095361}
   resolutionPanel: {fileID: 1301458580}
-  fullscreenPanel: {fileID: 1577587542}
+  fullscreenPanel: {fileID: 615394686}
   manualResolutions:
   - width: 1280
     height: 720
