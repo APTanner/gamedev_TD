@@ -280,23 +280,39 @@ MonoBehaviour:
   - {x: 67, y: 66}
   HQCoordinates: {x: 50, y: 49}
   Spawners:
-  - EnemyCount: 50
+  - EnemyCount: 30
     WaveNum: 1
     Position: {x: 0, y: 0, z: 100}
     Rotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   - EnemyCount: 50
-    WaveNum: 1
+    WaveNum: 3
+    Position: {x: 0, y: 0, z: 100}
+    Rotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  - EnemyCount: 30
+    WaveNum: 2
     Position: {x: 100, y: 0, z: 200}
     Rotation: {x: 0, y: 1, z: 0, w: 0}
   - EnemyCount: 50
-    WaveNum: 1
+    WaveNum: 3
+    Position: {x: 100, y: 0, z: 200}
+    Rotation: {x: 0, y: 1, z: 0, w: 0}
+  - EnemyCount: 30
+    WaveNum: 2
     Position: {x: 100, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
   - EnemyCount: 50
+    WaveNum: 3
+    Position: {x: 100, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+  - EnemyCount: 30
     WaveNum: 1
     Position: {x: 200, y: 0, z: 100}
     Rotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  Money: f4010000c8000000c8000000
+  - EnemyCount: 50
+    WaveNum: 3
+    Position: {x: 200, y: 0, z: 100}
+    Rotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
+  Money: 2c0100006400000064000000
   WaveTimes:
   - 30
   - 30

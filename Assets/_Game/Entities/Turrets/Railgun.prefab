@@ -721,7 +721,7 @@ MonoBehaviour:
   detectionRange: 200
   closeDetectionRange: 20
   rotationSpeed: 400
-  fireRate: 3
+  fireRate: 2
   minVerticalAimDistance: 5
   turretBase: {fileID: 5889039889410439692}
   gunPivot: {fileID: 218917245567389166}
