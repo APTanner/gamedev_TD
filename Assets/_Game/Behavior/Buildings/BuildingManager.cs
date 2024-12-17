@@ -452,6 +452,11 @@ public class BuildingManager : MonoBehaviour
         }
 
         Vector2Int currentCoords = GridManager.Instance.GetCoordinates(mousePosition);
+        if (!GridManager.Instance.IsValidCoordinate(currentCoords))
+        {
+            return;
+        }
+
         GridCell cell = GridManager.Instance.GetCell(currentCoords);
         IBuilding building = cell.Element as IBuilding;
 
@@ -473,7 +478,7 @@ public class BuildingManager : MonoBehaviour
             int refundAmount = hoveredBuilding.Price / 2; // Example refund logic
             PlayerMoney.Instance.AddMoney(refundAmount); // Adjust based on your resource system
 
-            hoveredBuilding.RemoveFromGrid(GridManager.Instance);
+            Deregister(hoveredBuilding);
             Destroy((hoveredBuilding as MonoBehaviour).gameObject);
 
             //Debug.Log($"Sold building for {refundAmount} gold.");
