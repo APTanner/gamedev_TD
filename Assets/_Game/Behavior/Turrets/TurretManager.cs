@@ -139,7 +139,6 @@ public class TurretManager : MonoBehaviour
         {
             if (!arty.HasTarget)
             {
-                Debug.Log("new target");
                 arty.AssignTarget(enemiesInMostPopulousCells[idx][itrCnt]);
                 ++idx;
                 if (idx == enemiesInMostPopulousCells.Count)

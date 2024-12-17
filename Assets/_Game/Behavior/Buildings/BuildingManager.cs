@@ -53,7 +53,6 @@ public class BuildingManager : MonoBehaviour
     {
         m_bNoPlacing = true;
         currentBuildable = null;
-        Destroy(previewInstance);
     }
 
     private void EventManager_OnWaveEnd(int obj)

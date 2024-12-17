@@ -7,7 +7,27 @@ public class ToggleButtonsManager : MonoBehaviour
     public Color clickedColor = Color.green;
 
     private Button currentHighlightedButton = null;
-    public BuildingManager buildingManager; 
+    public BuildingManager buildingManager;
+
+    protected void OnEnable()
+    {
+        Switchboard.OnWaveStart += Switchboard_OnWaveStart;
+    }
+
+    protected void OnDisable()
+    {
+        Switchboard.OnWaveStart -= Switchboard_OnWaveStart;
+    }
+
+    private void Switchboard_OnWaveStart(int obj)
+    {
+        if (currentHighlightedButton == null)
+        {
+            return;
+        }
+
+        ToggleButtonColor(currentHighlightedButton, null);
+    }
 
     void Start()
     {

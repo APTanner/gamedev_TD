@@ -30,14 +30,6 @@ public class BuildableObject : MonoBehaviour, IBuilding, IGridElement
         buildingManager.Register(this);
     }
 
-    protected void OnDestroy()
-    {
-        if (Application.isPlaying)
-        {
-            buildingManager.Deregister(this);
-        }
-    }
-
     public void SetCoordinates(Vector2Int coordinates)
     {
         m_coordinates = coordinates;
