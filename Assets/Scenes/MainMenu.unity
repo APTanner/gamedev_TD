@@ -3185,7 +3185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxSpeed: 10
   Acceleration: 10
-  TurnSpeed: 90
+  TurnSpeed: 180
   AvoidanceAngle: 10
   ObstacleAvoidDistance: 10
   WhiskerDistance: 10
