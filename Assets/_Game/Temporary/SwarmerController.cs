@@ -65,16 +65,6 @@ public class SwarmerController : MonoBehaviour
         m_attackAudioSource = GetComponent<AudioSource>();
     }
 
-    protected void OnEnable()
-    {
-        Switchboard.OnEffectVolumeChanged += Switchboard_OnEffectVolumeChanged;
-    }
-
-    protected void OnDisable()
-    {
-        Switchboard.OnEffectVolumeChanged -= Switchboard_OnEffectVolumeChanged;
-    }
-
     protected void Update()
     {
         if (!m_manager.DebugMovement)
@@ -500,16 +490,7 @@ public class SwarmerController : MonoBehaviour
 
     protected void OnDestroy()
     {
-        if (gameObject.scene.isLoaded && deathSound != null)
-        {
-            AudioSource.PlayClipAtPoint(deathSound, transform.position);
-        }
         m_manager.Deregister(this);
-    }
-
-    private void Switchboard_OnEffectVolumeChanged(float volume)
-    {
-        m_attackAudioSource.volume = volume;
     }
 
     private bool m_bMarked = false;

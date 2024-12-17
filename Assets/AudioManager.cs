@@ -1,9 +1,14 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
+    const string MASTER_MIXERID = "MasterVolume";
+    const string MUSIC_MIXERID = "MusicVolume";
+    const string EFFECTS_MIXERID = "EffectVolume";
+
     public static AudioManager Instance { get; private set; }
 
     protected void Awake()
@@ -22,18 +27,37 @@ public class AudioManager : MonoBehaviour
     private void Initialize()
     {
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-        Switchboard.OnMusicVolumeChanged += Switchboard_OnMusicVolumeChanged;
 
         Switchboard.OnWaveStart += Switchboard_OnWaveStart;
         Switchboard.OnWaveEnd += Switchboard_OnWaveEnd;
 
+        Switchboard.OnMasterVolumeChanged += Switchboard_OnMasterVolumeChanged;
+        Switchboard.OnMusicVolumeChanged += Switchboard_OnMusicVolumeChanged;
+        Switchboard.OnEffectVolumeChanged += Switchboard_OnEffectVolumeChanged;
+
+        Switchboard.OnHQHealthChanged += Switchboard_OnHQHealthChanged;
+
         SceneManager_sceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+    }
+
+
+
+    protected void Start()
+    {
+        Switchboard_OnMasterVolumeChanged(1);
+        Switchboard_OnMusicVolumeChanged(1);
+        Switchboard_OnEffectVolumeChanged(1);
     }
 
     protected void OnDestroy()
     {
         SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+
+        Switchboard.OnMasterVolumeChanged -= Switchboard_OnMasterVolumeChanged;
         Switchboard.OnMusicVolumeChanged -= Switchboard_OnMusicVolumeChanged;
+        Switchboard.OnEffectVolumeChanged -= Switchboard_OnEffectVolumeChanged;
+
+        Switchboard.OnHQHealthChanged -= Switchboard_OnHQHealthChanged;
     }
 
     private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
@@ -56,6 +80,25 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void Switchboard_OnEffectVolumeChanged(float volume)
+    {
+        Mixer.SetFloat(EFFECTS_MIXERID, volume == 0 ? -100 : Mathf.Log10(volume * Defines.EffectBaseVolume) * 20);
+    }
+
+    private void Switchboard_OnMusicVolumeChanged(float volume)
+    {
+        Debug.Log(volume == 0 ? -100 : Mathf.Log10(volume * Defines.MusicBaseVolume) * 20);
+        Mixer.SetFloat(MUSIC_MIXERID, volume == 0 ? -100 : Mathf.Log10(volume * Defines.MusicBaseVolume) * 20);
+    }
+
+    private void Switchboard_OnMasterVolumeChanged(float volume)
+    {
+        Mixer.SetFloat(MASTER_MIXERID, volume == 0 ? -100 : Mathf.Log10(volume) * 20);
+    }
+
+    [Header("Mixer")]
+    [SerializeField] private AudioMixer Mixer;
+
     [Header("Music")]
     [SerializeField] private AudioSource MenuTheme;
     [SerializeField] private string MenuSceneName;
@@ -64,9 +107,30 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private float FadeDuration;
 
     [Header("Effects")]
+    [SerializeField] private AudioMixerGroup EffectAudioGroup;
+    [SerializeField] private AudioSource ButtonClick;
+    [SerializeField] private AudioSource HQDamageWarning;
 
     private bool m_bInMenu;
     private float m_battleMusicTime;
+
+    public void PlayEffectAtPosition(AudioClip clip, Vector3 position, float volume = 1f)
+    {
+        GameObject gameObject = new GameObject("One shot audio");
+        gameObject.transform.position = position;
+        AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
+        audioSource.clip = clip;
+        audioSource.outputAudioMixerGroup = EffectAudioGroup;
+        audioSource.spatialBlend = 1f;
+        audioSource.volume = volume;
+        audioSource.Play();
+        Object.Destroy(gameObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
+    }
+
+    public void PlayButtonClick()
+    {
+        ButtonClick.PlayOneShot(ButtonClick.clip);
+    }
 
     private void Switchboard_OnWaveStart(int wave)
     {
@@ -90,11 +154,14 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(FadeMusic(BuildingTheme, BattleTheme, FadeDuration));
     }
 
-    private void Switchboard_OnMusicVolumeChanged(float volume)
+    private void Switchboard_OnHQHealthChanged(int health)
     {
-        MenuTheme.volume = volume;
-        BattleTheme.volume = volume;
-        BuildingTheme.volume = volume;
+        if (health == Defines.HQMaxHealth || HQDamageWarning.isPlaying)
+        {
+            return;
+        }
+
+        HQDamageWarning.Play();
     }
 
     private IEnumerator FadeMusic(AudioSource fadeIn, AudioSource fadeOut, float time)

@@ -75,7 +75,7 @@ public class Bullet : MonoBehaviour
         {
             if (explosionSound != null)
             {
-                AudioSource.PlayClipAtPoint(explosionSound, transform.position, Switchboard.EffectVolume);
+                AudioManager.Instance.PlayEffectAtPosition(explosionSound, transform.position);
             }
             Destroy(gameObject);
         }

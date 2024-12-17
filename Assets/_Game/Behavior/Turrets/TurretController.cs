@@ -315,7 +315,6 @@ public class TurretController : MonoBehaviour
 
         if (FiringAudioSource != null)
         {
-            FiringAudioSource.volume = Switchboard.EffectVolume;
             FiringAudioSource.PlayOneShot(FiringAudioSource.clip);
         }
 

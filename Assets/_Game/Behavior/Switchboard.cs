@@ -49,28 +49,20 @@ public static class Switchboard
     }
 
     public static event Action<float> OnMasterVolumeChanged;
-    public static float MasterVolume { get; private set; } = 1;
     public static void MasterVolumeChanged(float volume)
     {
-        MasterVolume = volume;
-        OnMasterVolumeChanged?.Invoke(MasterVolume);
-        EffectVolumeChanged(EffectVolume);
-        MusicVolumeChanged(MusicVolume);
+        OnMasterVolumeChanged?.Invoke(volume);
     }
 
     public static event Action<float> OnEffectVolumeChanged;
-    public static float EffectVolume { get; private set; } = 1;
     public static void EffectVolumeChanged(float volume)
     {
-        EffectVolume = volume * MasterVolume * Defines.EffectBaseVolume;
-        OnEffectVolumeChanged?.Invoke(EffectVolume);
+        OnEffectVolumeChanged?.Invoke(volume);
     }
 
     public static event Action<float> OnMusicVolumeChanged;
-    public static float MusicVolume { get; private set; } = 1;
     public static void MusicVolumeChanged(float volume)
     {
-        MusicVolume = volume * MasterVolume * Defines.MusicBaseVolume;
-        OnMusicVolumeChanged?.Invoke(MusicVolume);
+        OnMusicVolumeChanged?.Invoke(volume);
     }
 }
