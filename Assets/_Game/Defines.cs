@@ -20,4 +20,7 @@ public static class Defines
     public const float EnemySpwanMarkerFadeOutTime = 1f;
 
     public const float HQThreatDistance = 15f;
+
+    public const float MusicBaseVolume = 1;
+    public const float EffectBaseVolume = 1;
 }

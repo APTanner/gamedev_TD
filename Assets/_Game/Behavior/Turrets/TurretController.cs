@@ -20,6 +20,7 @@ public class TurretController : MonoBehaviour
     public GameObject bulletPrefab;
     protected float bulletSpeed;
     public VisualEffect muzzleFlashVFX;
+    public AudioSource FiringAudioSource;
 
     public bool IsPreview { get; set; } = false;
 
@@ -310,6 +311,12 @@ public class TurretController : MonoBehaviour
         if (muzzleFlashVFX != null)
         {
             muzzleFlashVFX.Play();
+        }
+
+        if (FiringAudioSource != null)
+        {
+            FiringAudioSource.volume = Switchboard.EffectVolume;
+            FiringAudioSource.PlayOneShot(FiringAudioSource.clip);
         }
 
         if (bulletPrefab != null && firePoint != null)

@@ -12,6 +12,7 @@ public class Bullet : MonoBehaviour
     public float ExplosionDamage = 0f;
 
     public VisualEffect explosionEffectPrefab;
+    public AudioClip explosionSound;
 
     protected Rigidbody rb;
 
@@ -72,6 +73,10 @@ public class Bullet : MonoBehaviour
 
         if (--penetration <= 0)
         {
+            if (explosionSound != null)
+            {
+                AudioSource.PlayClipAtPoint(explosionSound, transform.position, Switchboard.EffectVolume);
+            }
             Destroy(gameObject);
         }
     }

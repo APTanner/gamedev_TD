@@ -12,6 +12,9 @@ public class SwarmerController : MonoBehaviour
     //private GameObject AttackVfxPrefab;
     private VisualEffect attackVFX;
 
+    [SerializeField] private AudioClip deathSound;
+    private AudioSource m_attackAudioSource;
+
     private float currentHealth;
 
     public bool ShowDesiredHeading = false;
@@ -29,6 +32,7 @@ public class SwarmerController : MonoBehaviour
     private int m_attention;
 
     private bool m_bAttacking = false;
+    private bool m_bAttackingLastFrame = false;
     private bool m_bFacingTarget = false;
 
     public bool IsAttacking => m_bAttacking;
@@ -57,6 +61,18 @@ public class SwarmerController : MonoBehaviour
         {
             attackVFX.Stop();
         }
+
+        m_attackAudioSource = GetComponent<AudioSource>();
+    }
+
+    protected void OnEnable()
+    {
+        Switchboard.OnEffectVolumeChanged += Switchboard_OnEffectVolumeChanged;
+    }
+
+    protected void OnDisable()
+    {
+        Switchboard.OnEffectVolumeChanged -= Switchboard_OnEffectVolumeChanged;
     }
 
     protected void Update()
@@ -437,6 +453,11 @@ public class SwarmerController : MonoBehaviour
                     {
                         attackVFX.Play(); // Start the VFX if it's not already playing
                     }
+                    if (!m_bAttackingLastFrame)
+                    {
+                        m_attackAudioSource.Play();
+                    }
+                    m_bAttackingLastFrame = true;
                 }
                 // TRIAL 1
                 // 100 * (x^2 - d)^3 -> get desired velocity around the distance one wants to attack at
@@ -454,7 +475,9 @@ public class SwarmerController : MonoBehaviour
                 {
                     attackVFX.Stop(); // Stop the VFX when not attacking
                 }
+                m_attackAudioSource.Stop();
                 m_bAttacking = false;
+                m_bAttackingLastFrame = false;
             }
         }
 
@@ -477,7 +500,16 @@ public class SwarmerController : MonoBehaviour
 
     protected void OnDestroy()
     {
+        if (gameObject.scene.isLoaded && deathSound != null)
+        {
+            AudioSource.PlayClipAtPoint(deathSound, transform.position);
+        }
         m_manager.Deregister(this);
+    }
+
+    private void Switchboard_OnEffectVolumeChanged(float volume)
+    {
+        m_attackAudioSource.volume = volume;
     }
 
     private bool m_bMarked = false;

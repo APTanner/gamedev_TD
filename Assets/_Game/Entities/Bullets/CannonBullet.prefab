@@ -306,3 +306,4 @@ MonoBehaviour:
   ExplosionDamage: 5
   explosionEffectPrefab: {fileID: 6612712872792980774, guid: 49a842ec3e311974fa3c4a87adbc6fd4,
     type: 3}
+  explosionSound: {fileID: 8300000, guid: b497fb12fb9d62e4788abeb764b4f113, type: 3}
