@@ -28,11 +28,11 @@ public class ToggleButtonsManager : MonoBehaviour
 
         if (currentHighlightedButton.GetComponent<BuildingButton>().isBuildingButton)
         {
-            ToggleNonBuildingButton(currentHighlightedButton);
+            ToggleButtonColor(currentHighlightedButton, null);
         }
         else
         {
-            ToggleButtonColor(currentHighlightedButton, null);
+            ToggleNonBuildingButton(currentHighlightedButton);
         }
     }
 
