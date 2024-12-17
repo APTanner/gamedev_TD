@@ -2136,7 +2136,7 @@ MonoBehaviour:
     type: 3}
   EnemySpawnerPrefab: {fileID: 5721688203183946677, guid: b3e11a8c1afa4874baae88eb51dc7876,
     type: 3}
-  ObstaclePrefab: {fileID: 6189802888667152083, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
+  ObstaclePrefab: {fileID: 1704017629010811443, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
     type: 3}
   HQPrefab: {fileID: -169908826129843350, guid: a447606d6ccacd840a74187ded09ff81,
     type: 3}
@@ -5989,7 +5989,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.75}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000015258789}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &817116588

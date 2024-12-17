@@ -6,7 +6,7 @@ public class PrefabManager : MonoBehaviour
 
     public SwarmerController SwarmerPrefab;
     public EnemySpawner EnemySpawnerPrefab;
-    public Wall ObstaclePrefab;
+    public Obstacle ObstaclePrefab;
     public HQ HQPrefab;
 
     public void Awake()

@@ -11569,7 +11569,7 @@ MonoBehaviour:
     type: 3}
   EnemySpawnerPrefab: {fileID: 5721688203183946677, guid: b3e11a8c1afa4874baae88eb51dc7876,
     type: 3}
-  ObstaclePrefab: {fileID: 6189802888667152083, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
+  ObstaclePrefab: {fileID: 1704017629010811443, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
     type: 3}
   HQPrefab: {fileID: -169908826129843350, guid: a447606d6ccacd840a74187ded09ff81,
     type: 3}
