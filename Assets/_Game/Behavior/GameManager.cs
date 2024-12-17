@@ -91,6 +91,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    protected void Update()
+    {
+        if (s_state != GameState.InWave)
+        {
+            return;
+        }
+
+        m_waveTime -= Time.deltaTime;
+        Switchboard.WaveTimeChanged(m_waveTime);
+    }
+
     protected void FixedUpdate()
     {
         if (s_state != GameState.InWave)
@@ -98,7 +109,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        m_waveTime -= Time.fixedDeltaTime;
 
         if (Switchboard.HQHealth <= 0)
         {
@@ -134,7 +144,7 @@ public class GameManager : MonoBehaviour
 
         Switchboard.WaveStart(m_currentWave);
 
-        m_waveTime = 20;
+        m_waveTime = LevelData.WaveTimes[m_currentWave-1];
         s_state = GameState.InWave;
     }
 

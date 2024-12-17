@@ -42,6 +42,12 @@ public static class Switchboard
         OnHQHealthChanged?.Invoke(health);
     }
 
+    public static event Action<float> OnWaveTimeChanged;
+    public static void WaveTimeChanged(float waveTime)
+    {
+        OnWaveTimeChanged?.Invoke(waveTime);
+    }
+
     public static event Action<float> OnMasterVolumeChanged;
     public static float MasterVolume { get; private set; } = 1;
     public static void MasterVolumeChanged(float volume)

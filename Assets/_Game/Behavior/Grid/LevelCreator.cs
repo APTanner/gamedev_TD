@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ public class LevelCreator : MonoBehaviour
 
         GridManager.Instance.PopulateGridData(ref ld);
         GetSpawnerData(ref ld);
+        HandleWaveTimes(ref ld);
         bSuccess &= GetHQPosition(ref ld); //make sure we don't short circuit
 
         ld.Money = new int[] { 0 };
@@ -55,6 +57,29 @@ public class LevelCreator : MonoBehaviour
         {
             LevelData = AssetDatabase.LoadAssetAtPath<LevelData>(path);
         }
+    }
+
+    private void HandleWaveTimes(ref LevelData ld)
+    {
+        // The default wave time will be 20
+        const float defaultWaveTime = 20;
+
+        int waves = ld.Spawners.Max(x => x.WaveNum);
+        float[] waveTimes = new float[waves];
+
+        for (int i = 0; i < waves; ++i)
+        {
+            if (ld.WaveTimes != null && ld.WaveTimes.Length > i && ld.WaveTimes[i] != 0)
+            {
+                waveTimes[i] = ld.WaveTimes[i];
+            }
+            else
+            {
+                waveTimes[i] = defaultWaveTime;
+            }
+        }
+
+        ld.WaveTimes = waveTimes;
     }
 
     private bool GetHQPosition(ref LevelData ld)

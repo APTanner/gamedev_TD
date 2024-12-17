@@ -8,6 +8,7 @@ public class LevelData : ScriptableObject
     public Vector2Int HQCoordinates;
     public SpawnerData[] Spawners;
     public int[] Money;
+    public float[] WaveTimes;
 }
 
 [Serializable]
