@@ -482,7 +482,7 @@ MonoBehaviour:
   HQCoordinates: {x: 49, y: 25}
   Spawners:
   - EnemyCount: 25
-    WaveNum: 2
+    WaveNum: 1
     Position: {x: 100, y: 0, z: 150}
     Rotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   - EnemyCount: 50
@@ -490,11 +490,11 @@ MonoBehaviour:
     Position: {x: 100, y: 0, z: 150}
     Rotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   - EnemyCount: 75
-    WaveNum: 2
+    WaveNum: 3
     Position: {x: 100, y: 0, z: 150}
     Rotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   - EnemyCount: 150
-    WaveNum: 2
+    WaveNum: 4
     Position: {x: 100, y: 0, z: 150}
     Rotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   Money: a0000000c8000000fa0000002c01000058020000
