@@ -441,3 +441,5 @@ MonoBehaviour:
     Position: {x: 150, y: 0, z: 100}
     Rotation: {x: 0, y: 0.70710677, z: 0, w: -0.70710677}
   Money: 00000000
+  WaveTimes:
+  - 10
