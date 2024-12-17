@@ -1061,7 +1061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &167514064
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2544,7 +2544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a36b793de9e2b4dad86fae41b4b23f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 6189802888667152083, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
+  buildingPrefab: {fileID: 1704017629010811443, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
     type: 3}
   isBuildingButton: 1
 --- !u!1 &366118460
@@ -5943,7 +5943,7 @@ MonoBehaviour:
     type: 3}
   EnemySpawnerPrefab: {fileID: 5721688203183946677, guid: b3e11a8c1afa4874baae88eb51dc7876,
     type: 3}
-  ObstaclePrefab: {fileID: 6189802888667152083, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
+  ObstaclePrefab: {fileID: 1704017629010811443, guid: 4cb94c8678ea6cf49a8363eed6cb161c,
     type: 3}
   HQPrefab: {fileID: -169908826129843350, guid: a447606d6ccacd840a74187ded09ff81,
     type: 3}
@@ -5966,7 +5966,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1049153333
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9327,7 +9327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Levels:
-  - {fileID: 11400000, guid: 845ccb758c71b9b44b23304e4e97db48, type: 2}
+  - {fileID: 11400000, guid: 184cf4f36b32b8747b777900a21f5247, type: 2}
 --- !u!1 &2122181801
 GameObject:
   m_ObjectHideFlags: 0
