@@ -12,15 +12,15 @@ public class ToggleButtonsManager : MonoBehaviour
     void Start()
     {
         Button[] buttons = GetComponentsInChildren<Button>();
+        int i = 0;
 
         foreach (Button button in buttons)
         {
-            button.image.color = normalColor;
-
             BuildingButton buildingButton = button.GetComponent<BuildingButton>();
 
             if (buildingButton != null)
             {
+                button.image.color = normalColor;
                 if (buildingButton.isBuildingButton)
                 {
                     button.onClick.AddListener(() => ToggleButtonColor(button, buildingButton.buildingPrefab));
@@ -30,10 +30,7 @@ public class ToggleButtonsManager : MonoBehaviour
                     button.onClick.AddListener(() => ToggleNonBuildingButton(button));
                 }
             }
-            //else 
-            //{
-            //    button.onClick.AddListener(() => ToggleNonBuildingButton(button));
-            //}
+            i++;
         }
     }
 
