@@ -142,6 +142,7 @@ public class CameraController : MonoBehaviour
 
     private void RotateY(float angle)
     {
-        transform.rotation = Quaternion.Euler(0f, angle * Time.deltaTime, 0f) * transform.rotation;
+        Quaternion deltaRotation = Quaternion.AngleAxis(angle * Time.deltaTime, Vector3.up);
+        transform.rotation = deltaRotation * transform.rotation;
     }
 }

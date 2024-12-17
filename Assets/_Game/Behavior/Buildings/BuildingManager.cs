@@ -105,7 +105,7 @@ public class BuildingManager : MonoBehaviour
                 {
                     dragStartCoords = currentCoords;
                     isDragging = true;
-                    ClearStandardPreview();
+                    DestroyPreview();
                 }
             }
             else
@@ -141,15 +141,6 @@ public class BuildingManager : MonoBehaviour
 
         bool canPlace = currentBuildable.CanPlaceAt(currentCoords, grid);
         UpdatePreviewPosition(position, canPlace);
-    }
-
-    private void ClearStandardPreview()
-    {
-        if (previewInstance != null)
-        {
-            Destroy(previewInstance);
-            previewInstance = null;
-        }
     }
 
     private void HandleWallDragging(Vector2Int currentCoords, GridManager grid)
@@ -282,12 +273,11 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
-
-
     private void ClearWallPreview()
     {
         foreach (var instance in previewWallInstances)
         {
+            Deregister(instance.GetComponent<IBuilding>());
             Destroy(instance);
         }
         previewWallInstances.Clear();
@@ -340,6 +330,7 @@ public class BuildingManager : MonoBehaviour
     {
         if (previewInstance != null)
         {
+            Deregister(previewInstance.GetComponent<IBuilding>());
             Destroy(previewInstance);
             previewInstance = null;
         }
@@ -380,6 +371,10 @@ public class BuildingManager : MonoBehaviour
     public void ClearAllBuildings()
     {
         IBuilding[] buildingsArray = m_buildings.ToArray();
+        foreach (IBuilding building in buildingsArray)
+        {
+            Debug.Log(building);
+        }
         foreach (IBuilding building in buildingsArray)
         {
             Deregister(building);
