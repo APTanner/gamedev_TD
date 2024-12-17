@@ -127,8 +127,10 @@ public class BuildingManager : MonoBehaviour
 
     public void ToggleSellingMode()
     {
+        
         isSellingMode = !isSellingMode;
         ResetHoverEffects();
+        Debug.Log("Toggling sell: " + isSellingMode);
     }
 
     private void ShowStandardPreview(Vector2Int currentCoords, GridManager grid)

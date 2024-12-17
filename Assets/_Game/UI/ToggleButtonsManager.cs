@@ -25,13 +25,13 @@ public class ToggleButtonsManager : MonoBehaviour
         {
             return;
         }
-
         if (currentHighlightedButton.GetComponent<BuildingButton>().isBuildingButton)
         {
             ToggleButtonColor(currentHighlightedButton, null);
         }
         else
         {
+            buildingManager.ToggleSellingMode();
             ToggleNonBuildingButton(currentHighlightedButton);
         }
     }
