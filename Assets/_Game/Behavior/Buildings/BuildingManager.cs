@@ -373,10 +373,6 @@ public class BuildingManager : MonoBehaviour
         IBuilding[] buildingsArray = m_buildings.ToArray();
         foreach (IBuilding building in buildingsArray)
         {
-            Debug.Log(building);
-        }
-        foreach (IBuilding building in buildingsArray)
-        {
             Deregister(building);
             Destroy((building as Component).gameObject);
         }
